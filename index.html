@@ -55,7 +55,7 @@
                                             <center> <img id="picURL" class="avatar" alt="Cinque Terre" width="50"
                                                     height="50"><br></center>
                                             <div class="mb-3 mt-3">
-                                                <label for="uname" class="form-label">ชื่อลงทะเบียน:</label>
+                                                <label for="uname" class="form-label">ชื่อ Line:</label>
                                                 <input type="text" class="form-control" name="UName" id="uname"
                                                     readonly>
                                                 <input id="uid" class="form-control" name="Uid" style="display:none;">
@@ -63,49 +63,49 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <label for="number1">เบอร์โทรติดต่อ</label>
+                                            <label for="number1">Mobile Phone</label>
                                             <input type="tel" class="form-control" pattern="[0-9]{10}"
                                                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                                                 placeholder="ระบุเบอร์โทรติดต่อกลับ" id="tel" name="tel" maxlength="10"
                                                 minlength="10" required>
                                             <div class="valid-feedback">ผ่าน</div>
-                                            <div class="invalid-feedback">กรุณาป้อนเบอร์โทรให้ครบ10หลัก</div>
+                                            <div class="invalid-feedback">กรอกเบอร์มือถือ 10 หลัก</div>
                                         </div>
 
                                         <div class="form-group col-md-12">
-                                            <label for="number1">ข้อมูล1</label>
+                                            <label for="number1">เลขใบประกอบวิชาชีพ</label>
                                             <input type="text" class="form-control" placeholder="เลขที่1" id="number1"
                                                 name="number1" required>
                                             <div class="valid-feedback">ผ่าน</div>
-                                            <div class="invalid-feedback">ผ่าน</div>
+                                            <div class="invalid-feedback">กรอกเฉพาะ..ตัวเลข</div>
                                         </div>
                                         <div class="form-group col-md-12">
                                             <label for="number2">วันเกิด</label>
                                             <input type="date" class="form-control" placeholder="เลขที่2" id="number2"
                                                 name="number2" required>
                                             <div class="valid-feedback">ผ่าน</div>
-                                            <div class="invalid-feedback">กรุณาป้อนข้อมูลให้ครบ</div>
+                                            <div class="invalid-feedback">เลือก..วันเกิด</div>
                                         </div>
                                         <div class="form-group col-md-12">
                                             <label for="number3">email</label>
                                             <input type="email" class="form-control" placeholder="เลขที่3" id="number3"
                                                 name="number3" required>
                                             <div class="valid-feedback">ผ่าน</div>
-                                            <div class="invalid-feedback">กรุณาป้อนข้อมูลให้ครบ</div>
+                                            <div class="invalid-feedback">กรอก..อีเมล</div>
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <label for="number4">ข้อมูล4</label>
+                                            <label for="number4">ชื่อ</label>
                                             <input type="text" class="form-control" placeholder="เลขที่4" id="number4"
                                                 name="number4" required>
                                             <div class="valid-feedback">ผ่าน</div>
-                                            <div class="invalid-feedback">กรุณาป้อนข้อมูลให้ครบ</div>
+                                            <div class="invalid-feedback">กรอก..เฉพาะชื่อ</div>
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <label for="number5">ข้อมูล5</label>
+                                            <label for="number5">นามสกุล</label>
                                             <input type="text" class="form-control" placeholder="เลขที่5" id="number5"
                                                 name="number5" required>
                                             <div class="valid-feedback">ผ่าน</div>
-                                            <div class="invalid-feedback">กรุณาป้อนข้อมูลให้ครบ</div>
+                                            <div class="invalid-feedback">กรอก..นามสกุล</div>
                                         </div>
                                     </div>
                                     <div class="row"> </div>
@@ -117,12 +117,12 @@
                                             required>
                                         <label class="form-check-label"
                                             for="validationFormCheck1">ยอมรับเงื่อนไขตามตกลง</label>
-                                        <div class="invalid-feedback">หากไม่ยอมรับเงื่อนนไขจะไม่สามารถร่วมกิจกรรมได้
+                                        <div class="invalid-feedback">หากไม่ยอมรับเงื่อนนไขจะไม่สามารถลงทะเบียนได้
                                         </div>
                                     </div>
                                     <button type="submit" name="submit" id="submit"
                                         class="btn btn-primary bd-indigo-500 btn-block text-white" disabled><i
-                                            class="fas fa-paper-plane"></i> ลงทะเบียน</button>
+                                            class="fas fa-paper-plane"></i>ลงทะเบียน</button>
                                 </div>
                             </div>
                     </div>
@@ -217,7 +217,7 @@
                                             "contents": [
                                                 {
                                                     "type": "text",
-                                                    "text": "ลงทะเบียนเรียบร้อยแล้ว!",
+                                                    "text": "ลงทะเบียนเรียบร้อยแล้วค่ะ",
                                                     "size": "md",
                                                     "weight": "bold",
                                                     "color": "#1DB446"
@@ -391,7 +391,7 @@
                                                 },
                                                 {
                                                     "type": "text",
-                                                    "text": "นี่คือเลขข้อมูลการลงทะเบียนของท่าน โปรดเก็บไว้เป็นหลักฐาน",
+                                                    "text": "ข้อมูลส่วนตัวของท่าน",
                                                     "size": "sm",
                                                     "align": "center",
                                                     "color": "#ff3333"
@@ -406,8 +406,8 @@
                                                     "type": "button",
                                                     "action": {
                                                         "type": "uri",
-                                                        "label": "เยี่ยมชมร้านค้า",
-                                                        "uri": "https://shop.line.me/@692ajmyz"
+                                                        "label": "Facebook",
+                                                        "uri": "https://www.facebook.com/Pharmacy.CU"
                                                     },
                                                     "style": "primary"
                                                 },
@@ -415,8 +415,8 @@
                                                     "type": "button",
                                                     "action": {
                                                         "type": "uri",
-                                                        "label": "ชวนเพื่อนมาเล่น",
-                                                        "uri": "https://line.me/R/nv/recommendOA/@692ajmyz"
+                                                        "label": "เว็บคณะ",
+                                                        "uri": "https://www.pharm.chula.ac.th/th/"
                                                     },
                                                     "style": "primary",
                                                     "margin": "xs",
