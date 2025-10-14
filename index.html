@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฟอร์มลงทะเบียน</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://bit.ly/fontiton5" type="text/css" charset="utf-8" />
+
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style type="text/css">
+        /* Custom styles and font definition */
+        body {
+            font-family: 'line_seed_sans_th', sans-serif;
+        }
+
+        /* Styling for form validation feedback messages */
+        .form-input:required:invalid+.invalid-feedback {
+            display: block;
+        }
+    </style>
+    
+    <script>
+        // Custom Tailwind CSS Configuration for Chula Colors
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cu-pink': '#EC008C',
+                        'cu-gray-text': '#58595B',
+                        'cu-gray-light': '#D9D9D6',
+                        'cu-bg-light': '#F4F4F4',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-cu-bg-light flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div id="status-container" class="w-full max-w-md mx-auto text-center mb-6">
+        <div id="timer" class="hidden"></div>
+        <div id="msgStatus" class="text-cu-gray-text text-xl font-semibold"></div>
+    </div>
+
+    <div id="cover" style="display:none;" class="w-full">
+        <div id="loginPage" class="w-full max-w-md mx-auto">
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                
+                <div class="text-center mb-6">
+                    <img id="picURL" class="w-24 h-24 rounded-full mx-auto border-4 border-cu-pink" alt="Line Profile Picture">
+                </div>
+                
+                <form id="loginForm" name="google-sheet" autocomplete="off" novalidate>
+                    <input type="hidden" id="uid" name="Uid">
+                    <input type="hidden" id="uname" name="UName">
+                    <input type="hidden" id="upic" name="Upic">
+
+                    <div class="space-y-4">
+                        <div>
+                            <label for="uname_display" class="block text-sm font-medium text-cu-gray-text">ชื่อ Line</label>
+                            <input type="text" id="uname_display" class="mt-1 w-full p-3 bg-gray-100 border border-gray-300 rounded-md cursor-not-allowed" readonly>
+                        </div>
+
+                        <div>
+                            <label for="tel" class="block text-sm font-medium text-cu-gray-text">เบอร์โทรศัพท์มือถือ</label>
+                            <input type="tel" id="tel" name="tel" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเบอร์มือถือ 10 หลัก" pattern="[0-9]{10}" required>
+                            <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง</div>
+                        </div>
+
+                        <div>
+                            <label for="number1" class="block text-sm font-medium text-cu-gray-text">เลขใบประกอบวิชาชีพ</label>
+                            <input type="text" id="number1" name="number1" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเฉพาะตัวเลข" required>
+                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเลขใบประกอบ</div>
+                        </div>
+
+                        <div>
+                            <label for="number2" class="block text-sm font-medium text-cu-gray-text">วันเกิด</label>
+                            <input type="date" id="number2" name="number2" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" required>
+                            <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณาเลือกวันเกิด</div>
+                        </div>
+                        
+                        <div>
+                            <label for="number3" class="block text-sm font-medium text-cu-gray-text">Email</label>
+                            <input type="email" id="number3" name="number3" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกอีเมล" required>
+                            <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกอีเมลให้ถูกต้อง</div>
+                        </div>
+
+                        <div>
+                            <label for="number4" class="block text-sm font-medium text-cu-gray-text">ชื่อ</label>
+                            <input type="text" id="number4" name="number4" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเฉพาะชื่อ" required>
+                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกชื่อ</div>
+                        </div>
+                        
+                        <div>
+                            <label for="number5" class="block text-sm font-medium text-cu-gray-text">นามสกุล</label>
+                            <input type="text" id="number5" name="number5" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกนามสกุล" required>
+                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกนามสกุล</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="visto" name="visto" class="h-4 w-4 rounded border-gray-300 text-cu-pink focus:ring-cu-pink" required>
+                            <span class="ml-2 text-sm text-cu-gray-text">ยอมรับเงื่อนไขตามข้อตกลง</span>
+                        </label>
+                         <div class="invalid-feedback hidden text-red-600 text-sm mt-1">หากไม่ยอมรับเงื่อนไขจะไม่สามารถลงทะเบียนได้</div>
+                    </div>
+
+                    <div class="mt-8">
+                        <button type="submit" id="submit" class="w-full bg-cu-pink text-white font-bold py-3 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 disabled:bg-cu-gray-light disabled:cursor-not-allowed">
+                            <i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        // ====================================================================
+        // SCRIPT FROM script.js
+        // ====================================================================
+        var future = Date.parse("November 28, 2025 06:00:00");
+        var future2 = Date.parse("December 03, 2025 20:00:00");
+        var timeEnd = 0;
+        var status = 0;
+
+        function updateTimer() {
+            var now = new Date();
+            if (future - now < 0) {
+                timeEnd = future2;
+                status = 1;
+            } else {
+                timeEnd = future;
+                status = 0;
+            }
+            if (future2 - now < 0) {
+                status = 2;
+            }
+
+            diff = timeEnd - now;
+            days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            hours = Math.floor(diff / (1000 * 60 * 60));
+            mins = Math.floor(diff / (1000 * 60));
+            secs = Math.floor(diff / 1000);
+            
+            d = days;
+            h = hours - days * 24;
+            m = mins - hours * 60;
+            s = secs - mins * 60;
+
+            h = h < 10 ? "0" + h : h;
+            m = m < 10 ? "0" + m : m;
+            s = s < 10 ? "0" + s : s;
+
+            // Updated timer HTML with Tailwind CSS classes
+            document.getElementById("timer").innerHTML =
+                '<h2 class="text-xl font-semibold text-cu-gray-text mb-4">เหลือเวลาอีก</h2>' +
+                '<div class="flex justify-center space-x-2 sm:space-x-4">' +
+                '<div class="text-center bg-white p-3 rounded-lg shadow-md min-w-[70px]">' +
+                '<div class="text-4xl font-bold text-cu-pink">' + d + '</div>' +
+                '<span class="text-xs text-cu-gray-text uppercase">วัน</span>' +
+                '</div>' +
+                '<div class="text-center bg-white p-3 rounded-lg shadow-md min-w-[70px]">' +
+                '<div class="text-4xl font-bold text-cu-pink">' + h + '</div>' +
+                '<span class="text-xs text-cu-gray-text uppercase">ชั่วโมง</span>' +
+                '</div>' +
+                '<div class="text-center bg-white p-3 rounded-lg shadow-md min-w-[70px]">' +
+                '<div class="text-4xl font-bold text-cu-pink">' + m + '</div>' +
+                '<span class="text-xs text-cu-gray-text uppercase">นาที</span>' +
+                '</div>' +
+                '<div class="text-center bg-white p-3 rounded-lg shadow-md min-w-[70px]">' +
+                '<div class="text-4xl font-bold text-cu-pink">' + s + '</div>' +
+                '<span class="text-xs text-cu-gray-text uppercase">วินาที</span>' +
+                '</div>' +
+                '</div>';
+
+            // Control page visibility based on time
+            if (status == 0) { // Before registration opens
+                document.getElementById("msgStatus").innerHTML = "<h2>ยังไม่เปิดให้ลงทะเบียน</h2>";
+                document.getElementById("timer").style.display = "block";
+                document.getElementById("cover").style.display = "none";
+            } else if (status == 1) { // Registration is open
+                document.getElementById("msgStatus").innerHTML = "<h2>จะปิดระบบลงทะเบียนใน</h2>";
+                document.getElementById("timer").style.display = "block";
+                document.getElementById("cover").style.display = "block";
+            } else { // Registration is closed
+                document.getElementById("msgStatus").innerHTML =
+                    '<div class="bg-white rounded-2xl shadow-lg p-8 text-center">' +
+                    '<h2 class="text-2xl font-bold text-red-600 mb-4">ขณะนี้ปิดระบบลงทะเบียนแล้วค่ะ</h2>' +
+                    '<button type="button" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg" onclick="liff.closeWindow()">ปิดหน้านี้</button>' +
+                    '</div>';
+                document.getElementById("timer").style.display = "none";
+                document.getElementById("cover").style.display = "none";
+            }
+        }
+        setInterval('updateTimer()', 1000);
+
+        // ====================================================================
+        // SCRIPTS FROM index.html
+        // ====================================================================
+        window.onload = function() {
+            // WARNING: DO NOT CHANGE THE LIFF ID
+            initializeLiff("2007356106-xpYMlK8v");
+        };
+
+        function initializeLiff(myLiffId) {
+            liff
+                .init({ liffId: myLiffId })
+                .then(() => { getid(); })
+                .catch(err => { console.error(err); });
+        }
+
+        function getid() {
+            liff.getProfile().then(function(profile) {
+                document.getElementById("uid").value = profile.userId;
+                document.getElementById("uname").value = profile.displayName;
+                document.getElementById("uname_display").value = profile.displayName; // For display
+                document.getElementById("upic").value = profile.pictureUrl;
+                document.getElementById("picURL").src = profile.pictureUrl;
+            }).catch(err => { console.error(err); });
+        }
+        
+        // Form submission to Google Sheets
+        // WARNING: DO NOT CHANGE THE SCRIPT URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
+        const form = document.forms['google-sheet'];
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Disable button to prevent multiple submissions
+            document.getElementById('submit').disabled = true;
+            document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => {
+                    // Send LIFF message on successful submission
+                    sendLiffMessage();
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    alert("เกิดข้อผิดพลาดในการลงทะเบียน");
+                    // Re-enable button on error
+                    document.getElementById('submit').disabled = false;
+                    document.getElementById('submit').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน';
+                });
+        });
+        
+        function sendLiffMessage() {
+            liff.getProfile().then(profile => {
+                const name = profile.displayName;
+                const picURL = profile.pictureUrl;
+                const uid = profile.userId;
+                const tel = document.getElementById("tel").value;
+                const number1 = document.getElementById("number1").value;
+                const number2 = document.getElementById("number2").value;
+                const number3 = document.getElementById("number3").value;
+                const number4 = document.getElementById("number4").value;
+                const number5 = document.getElementById("number5").value;
+
+                liff.sendMessages([{
+                    type: "flex",
+                    altText: "ลงทะเบียนสำเร็จ",
+                    contents: {
+                      "type": "bubble",
+                      "hero": {
+                        "type": "image",
+                        "url": picURL,
+                        "size": "full",
+                        "aspectRatio": "20:13",
+                        "aspectMode": "cover"
+                      },
+                      "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "spacing": "md",
+                        "contents": [
+                          { "type": "text", "text": "ลงทะเบียนเรียบร้อยแล้วค่ะ", "size": "xl", "weight": "bold", "color": "#1DB446" },
+                          { "type": "box", "layout": "vertical", "margin": "lg", "spacing": "sm", "contents": [
+                              { "type": "box", "layout": "baseline", "spacing": "sm", "contents": [ { "type": "text", "text": "ชื่อ", "color": "#aaaaaa", "size": "sm", "flex": 1 }, { "type": "text", "text": `${number4} ${number5}`, "wrap": true, "color": "#666666", "size": "sm", "flex": 3, "weight": "bold" } ] },
+                              { "type": "box", "layout": "baseline", "spacing": "sm", "contents": [ { "type": "text", "text": "เบอร์โทร", "color": "#aaaaaa", "size": "sm", "flex": 1 }, { "type": "text", "text": tel, "wrap": true, "color": "#666666", "size": "sm", "flex": 3, "weight": "bold" } ] },
+                              { "type": "box", "layout": "baseline", "spacing": "sm", "contents": [ { "type": "text", "text": "เลข ภ.", "color": "#aaaaaa", "size": "sm", "flex": 1 }, { "type": "text", "text": number1, "wrap": true, "color": "#666666", "size": "sm", "flex": 3, "weight": "bold" } ] }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                }]).then(() => {
+                    liff.closeWindow();
+                }).catch((err) => {
+                    console.error(err);
+                    liff.closeWindow();
+                });
+            }).catch((err) => {
+                console.error(err);
+                alert("ไม่สามารถดึงข้อมูลโปรไฟล์ได้");
+                liff.closeWindow();
+            });
+        }
+
+        // Enable/disable submit button based on checkbox
+        $(document).ready(function() {
+            $('#submit').prop('disabled', true);
+            $('#visto').click(function() {
+                if ($(this).is(':checked')) {
+                    $('#submit').prop('disabled', false);
+                } else {
+                    $('#submit').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
