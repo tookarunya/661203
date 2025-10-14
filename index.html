@@ -204,7 +204,7 @@
                 document.getElementById("cover").style.display = "none";
             }
         }
-        setInterval('updateTimer()', 1000);
+        // setInterval('updateTimer()', 1000);
 
         // ====================================================================
         // SCRIPTS FROM index.html
@@ -238,11 +238,25 @@
 
         form.addEventListener('submit', e => {
             e.preventDefault();
+
+
+// TOOK เพิ่ม            
+            // กำหนดค่าเวลาเป็น 00:00 ก่อนส่ง
+            document.getElementById('timestamp').value = '00:00';
+            
             
             // Disable button to prevent multiple submissions
             document.getElementById('submit').disabled = true;
             document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
 
+            
+// TOOK เพิ่ม
+                    <input type="hidden" id="uid" name="Uid">
+                    <input type="hidden" id="uname" name="UName">
+                    <input type="hidden" id="upic" name="Upic">
+                    <input type="hidden" id="timestamp" name="Timestamp">          
+
+            
             fetch(scriptURL, { method: 'POST', body: new FormData(form) })
                 .then(response => {
                     // Send LIFF message on successful submission
