@@ -51,7 +51,7 @@
         <div id="msgStatus" class="text-cu-gray-text text-xl font-semibold"></div>
     </div>
 
-    <div id="cover" style="display:none;" class="w-full">
+    <div id="cover" style="display:block;" class="w-full">  // TOOK
         <div id="loginPage" class="w-full max-w-md mx-auto">
             <div class="bg-white rounded-2xl shadow-lg p-8">
                 
@@ -130,7 +130,7 @@
         // ====================================================================
         // SCRIPT FROM script.js
         // ====================================================================
-        var future = Date.parse("November 28, 2025 06:00:00");
+        /*var future = Date.parse("November 28, 2025 06:00:00");
         var future2 = Date.parse("December 03, 2025 20:00:00");
         var timeEnd = 0;
         var status = 0;
@@ -164,7 +164,7 @@
             s = s < 10 ? "0" + s : s;
 
             // Updated timer HTML with Tailwind CSS classes
-            /*document.getElementById("timer").innerHTML =
+            document.getElementById("timer").innerHTML =
                 '<h2 class="text-xl font-semibold text-cu-gray-text mb-4">เหลือเวลาอีก</h2>' +
                 '<div class="flex justify-center space-x-2 sm:space-x-4">' +
                 '<div class="text-center bg-white p-3 rounded-lg shadow-md min-w-[70px]">' +
