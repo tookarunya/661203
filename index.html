@@ -127,6 +127,34 @@
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
+
+
+// ====================================================================
+        // SCRIPTS FROM index.html
+        // ====================================================================
+        window.onload = function() {
+            // WARNING: DO NOT CHANGE THE LIFF ID
+            initializeLiff("2007356106-xpYMlK8v");
+        };
+
+        function initializeLiff(myLiffId) {
+            liff
+                .init({ liffId: myLiffId })
+                .then(() => { getid(); })
+                .catch(err => { console.error(err); });
+        }
+
+        function getid() {
+            liff.getProfile().then(function(profile) {
+                document.getElementById("uid").value = profile.userId;
+                document.getElementById("uname").value = profile.displayName;
+                document.getElementById("uname_display").value = profile.displayName; // For display
+                document.getElementById("upic").value = profile.pictureUrl;
+                document.getElementById("picURL").src = profile.pictureUrl;
+            }).catch(err => { console.error(err); });
+        }
+
+        
         // ====================================================================
         // SCRIPT FROM script.js
         // ====================================================================
@@ -209,7 +237,7 @@
         // ====================================================================
         // SCRIPTS FROM index.html
         // ====================================================================
-        window.onload = function() {
+        /*window.onload = function() {
             // WARNING: DO NOT CHANGE THE LIFF ID
             initializeLiff("2007356106-xpYMlK8v");
         };
@@ -229,7 +257,7 @@
                 document.getElementById("upic").value = profile.pictureUrl;
                 document.getElementById("picURL").src = profile.pictureUrl;
             }).catch(err => { console.error(err); });
-        }
+        }*/
         
         // Form submission to Google Sheets
         // WARNING: DO NOT CHANGE THE SCRIPT URL
