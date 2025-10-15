@@ -7,23 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        /* == Specification Summary ==
-         * Primary Color: #D18DA1 (Richer Pink)
-         * Hover Color: #FDEEF4 (Light Pink)
-         * Profile Card: Soft shadow, no border
-         * Prefix Dropdown: Custom styled <select> with hover effects
-         * Other Inputs: Simple, thin grey border
-         * All-in-one file structure
-        */
         :root {
-            --primary-pink: #D18DA1;
+            --primary-pink: #E64A85; /* <-- สีชมพูสดใสขึ้น */
             --light-pink-hover: #FDEEF4;
             --dark-gray: #5C5455;
             --light-gray: #DCDCDC;
+            --disabled-gray: #CCCCCC;
             --background-white: #FCFBFB;
-            --disabled-bg: #F5F5F5;
         }
 
         body {
@@ -32,7 +25,7 @@
             min-height: 100vh; color: var(--dark-gray);
         }
 
-        .container { width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; margin-top: 40px; }
+        .container { width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; margin-top: 40px; margin-bottom: 40px;}
         .header-text { text-align: center; margin-bottom: 30px; }
         .header-text h1 { font-size: 1.5rem; color: var(--dark-gray); margin-bottom: 5px; font-weight: 400; }
         .header-text h2 { font-size: 2.2rem; color: var(--dark-gray); margin-top: 0; font-weight: 600; }
@@ -47,32 +40,30 @@
         .registration-form { background-color: #FFFFFF; padding: 25px 30px; border-radius: 12px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; }
+        .required-star { color: red; font-size: 1.1rem; margin-left: 2px;}
 
-        .form-group input[type="text"],
-        .form-group input[type="tel"],
-        .form-group input[type="email"],
-        .form-group select {
+        .form-group input, .form-group select {
             width: 100%; padding: 12px 15px; border: 1px solid var(--light-gray); border-radius: 8px;
-            font-size: 1rem; color: var(--dark-gray); box-sizing: border-box;
-            transition: all 0.2s ease-in-out;
+            font-size: 1rem; color: var(--dark-gray); box-sizing: border-box; transition: all 0.2s ease-in-out;
         }
-        .form-group input:focus, .form-group select:focus {
-             outline: none; border-color: var(--primary-pink);
-             box-shadow: 0 0 5px rgba(209, 141, 161, 0.5);
-        }
-        .form-group input:disabled, .form-group select:disabled {
-             background-color: var(--disabled-bg); cursor: not-allowed;
-        }
+        .form-group input:focus { outline: none; border-color: var(--primary-pink); box-shadow: 0 0 5px rgba(230, 74, 133, 0.5); }
+        .form-group input:disabled { background-color: #F5F5F5; cursor: not-allowed; }
 
-        #prefix {
-            -webkit-appearance: none; appearance: none;
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235C5455%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-            background-repeat: no-repeat;
-            background-position: right 15px top 50%;
-            background-size: .65em auto; cursor: pointer;
+        /* --- CSS สำหรับปุ่มคำนำหน้า --- */
+        .prefix-buttons { display: flex; gap: 10px; }
+        .prefix-btn {
+            flex: 1; padding: 12px; border: 1px solid var(--light-gray); border-radius: 8px;
+            background-color: #FFFFFF; color: var(--dark-gray); font-size: 1rem;
+            font-family: 'Sarabun', sans-serif; cursor: pointer; transition: all 0.2s ease-in-out;
         }
-        #prefix:hover { background-color: var(--light-pink-hover); border-color: #EEDDE5; }
-        #prefix:disabled { background-image: none; }
+        .prefix-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .prefix-btn.active {
+            background-color: var(--primary-pink); color: white; border-color: var(--primary-pink);
+        }
+        .prefix-btn:disabled { background-color: #F5F5F5; transform: none; box-shadow: none; cursor: not-allowed;}
         
         .checkbox-group { display: flex; align-items: center; margin-top: 25px; margin-bottom: 30px; }
         .checkbox-group input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; }
@@ -83,7 +74,13 @@
             border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600;
             cursor: pointer; transition: background-color 0.3s ease;
         }
-        .submit-button:hover { background-color: #C17C8E; }
+        .submit-button:hover { background-color: #D33A71; }
+        .submit-button:disabled {
+            background-color: var(--disabled-gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
     </style>
 </head>
 <body>
@@ -95,91 +92,165 @@
 
         <div class="profile-card">
             <div class="profile-avatar">
-                <img src="https://via.placeholder.com/60x60/f0e0e0/806060?text=👤" alt="Profile Avatar">
+                <img id="lineProfilePicture" src="https://via.placeholder.com/60x60/f0e0e0/806060?text=👤" alt="Profile Avatar">
             </div>
             <div class="profile-info">
-                <p><strong>ชื่อโปรไฟล์ LINE:</strong> <span id="lineDisplayName">[ชื่อที่ดึงจาก LINE]</span></p>
+                <p><strong>ชื่อโปรไฟล์ LINE:</strong> <span id="lineDisplayName">[กรุณา Login]</span></p>
             </div>
         </div>
 
-        <form id="registrationForm" class="registration-form" action="YOUR_GOOGLE_SHEET_WEB_APP_URL" method="post">
+        <form id="registrationForm" action="YOUR_GOOGLE_SHEET_WEB_APP_URL" method="post">
             <input type="hidden" id="timestamp" name="timestamp">
             <input type="hidden" id="userId" name="userId">
             <input type="hidden" id="lineName" name="lineName">
 
             <div class="form-group">
-                <label for="prefix">คำนำหน้า:</label>
-                <select id="prefix" name="prefix">
-                    <option value="ภก.">ภก.</option>
-                    <option value="ภญ.">ภญ.</option>
-                </select>
+                <label>คำนำหน้า:<span class="required-star">*</span></label>
+                <div class="prefix-buttons">
+                    <button type="button" class="prefix-btn active" data-value="ภก.">ภก.</button>
+                    <button type="button" class="prefix-btn" data-value="ภญ.">ภญ.</button>
+                </div>
+                <input type="hidden" id="prefix" name="prefix" value="ภก.">
             </div>
             <div class="form-group">
-                <label for="firstName">ชื่อ:</label>
+                <label for="firstName">ชื่อ:<span class="required-star">*</span></label>
                 <input type="text" id="firstName" name="firstName" placeholder="กรอกชื่อจริง (ภาษาไทย)" required>
             </div>
             <div class="form-group">
-                <label for="lastName">นามสกุล:</label>
+                <label for="lastName">นามสกุล:<span class="required-star">*</span></label>
                 <input type="text" id="lastName" name="lastName" placeholder="กรอกนามสกุล (ภาษาไทย)" required>
             </div>
             <div class="form-group">
-                <label for="licenseNumber">เลขใบประกอบวิชาชีพ:</label>
-                <input type="text" id="licenseNumber" name="licenseNumber" placeholder="กรอกเลขใบประกอบวิชาชีพ" required>
+                <label for="licenseNumber">เลขใบประกอบวิชาชีพ:<span class="required-star">*</span></label>
+                <input type="text" inputmode="numeric" pattern="[0-9]*" id="licenseNumber" name="licenseNumber" placeholder="กรอกเฉพาะตัวเลข" required>
             </div>
             <div class="form-group">
-                <label for="phoneNumber">เบอร์โทรศัพท์:</label>
-                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="กรอกเบอร์โทรศัพท์" required>
+                <label for="phoneNumber">เบอร์โทรศัพท์:<span class="required-star">*</span></label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="ตัวเลข 10 หลัก ขึ้นต้นด้วย 0" maxlength="10" required>
             </div>
             <div class="form-group">
                 <label for="email">อีเมล:</label>
-                <input type="email" id="email" name="email" placeholder="กรอกอีเมล" required>
+                <input type="email" id="email" name="email" placeholder="(ไม่บังคับ) กรอกอีเมล">
             </div>
 
             <div class="checkbox-group">
                 <input type="checkbox" id="confirmData" name="confirmData" required>
-                <label for="confirmData">ยืนยันข้อมูลถูกต้อง</label>
+                <label for="confirmData">ยืนยันข้อมูลถูกต้อง<span class="required-star">*</span></label>
             </div>
 
-            <button type="submit" class="submit-button">ยืนยันการลงทะเบียน</button>
+            <button type="submit" id="submitButton" class="submit-button" disabled>ยืนยันการลงทะเบียน</button>
         </form>
     </div>
 
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
-        // --- ส่วนนี้คือส่วนที่ Developer ต้องทำการเชื่อมต่อกับ LINE API ---
-        // LIFF (LINE Front-end Framework) should be initialized before this script runs.
-        // Example: liff.init({ liffId: "YOUR_LIFF_ID" }).then(() => { ... });
-
-        window.onload = function() {
-            // This function should be called after LIFF is initialized.
-            if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
-                liff.getProfile().then(profile => {
-                    document.getElementById('lineDisplayName').textContent = profile.displayName;
-                    document.getElementById('userId').value = profile.userId;
-                    document.getElementById('lineName').value = profile.displayName;
-                }).catch(err => console.error(err));
-            } else {
-                // Mock data for testing outside LINE
-                const mockProfile = { userId: "U12345_mock", displayName: "Test User" };
-                document.getElementById('lineDisplayName').textContent = mockProfile.displayName;
-                document.getElementById('userId').value = mockProfile.userId;
-                document.getElementById('lineName').value = mockProfile.displayName;
-            }
-        };
-
-        // --- จัดการการล็อคฟอร์ม ---
-        document.getElementById('confirmData').addEventListener('change', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('registrationForm');
-            const elements = form.querySelectorAll('input, select');
-            elements.forEach(el => {
-                if (el.type !== 'hidden' && el.type !== 'checkbox') {
-                    el.disabled = this.checked;
+            const submitButton = document.getElementById('submitButton');
+            const prefixButtons = document.querySelectorAll('.prefix-btn');
+            const prefixInput = document.getElementById('prefix');
+            const phoneNumberInput = document.getElementById('phoneNumber');
+            const requiredInputs = form.querySelectorAll('[required]');
+
+            // ---------- 1. LIFF Initialization and Login ----------
+            liff.init({ liffId: "YOUR_LIFF_ID_HERE" }) // <-- *** ใส่ LIFF ID ของคุณตรงนี้ ***
+                .then(() => {
+                    if (!liff.isLoggedIn()) {
+                        liff.login(); // บังคับ Login
+                    } else {
+                        liff.getProfile().then(profile => {
+                            document.getElementById('lineProfilePicture').src = profile.pictureUrl;
+                            document.getElementById('lineDisplayName').textContent = profile.displayName;
+                            document.getElementById('userId').value = profile.userId;
+                            document.getElementById('lineName').value = profile.displayName;
+                        }).catch(err => console.error(err));
+                    }
+                })
+                .catch(err => console.error(err));
+
+            // ---------- 2. Prefix Button Logic ----------
+            prefixButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    prefixButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    prefixInput.value = button.dataset.value;
+                });
+            });
+
+            // ---------- 4. Phone Number Validation ----------
+            phoneNumberInput.addEventListener('blur', () => { // ตรวจสอบเมื่อผู้ใช้ออกจากช่องนี้
+                const phone = phoneNumberInput.value;
+                if (phone.length > 0 && (phone.length !== 10 || phone.charAt(0) !== '0')) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เบอร์โทรศัพท์ไม่ถูกต้อง',
+                        text: 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก และขึ้นต้นด้วยเลข 0 ค่ะ',
+                        confirmButtonColor: 'var(--primary-pink)'
+                    });
                 }
             });
-        });
-        
-        // --- ตั้งค่า Timestamp เมื่อกดยืนยัน ---
-        document.getElementById('registrationForm').addEventListener('submit', function(event) {
-            document.getElementById('timestamp').value = new Date().toISOString();
+
+            // ---------- 5 & 6. Form Validation & Submit Button State ----------
+            function validateForm() {
+                let isValid = true;
+                requiredInputs.forEach(input => {
+                    if ((input.type === 'checkbox' && !input.checked) || (input.type !== 'checkbox' && !input.value)) {
+                        isValid = false;
+                    }
+                });
+                
+                const phone = phoneNumberInput.value;
+                if (phone.length !== 10 || phone.charAt(0) !== '0') {
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+
+            form.addEventListener('input', () => {
+                if (validateForm()) {
+                    submitButton.disabled = false;
+                } else {
+                    submitButton.disabled = true;
+                }
+            });
+
+            // ---------- 7. Form Submission with SweetAlert ----------
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // หยุดการส่งฟอร์มปกติ
+                if (!validateForm()) {
+                    Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบถ้วนค่ะ', confirmButtonColor: 'var(--primary-pink)'});
+                    return;
+                }
+
+                document.getElementById('timestamp').value = new Date().toISOString();
+                
+                Swal.fire({
+                    title: 'ยืนยันการส่งข้อมูล?',
+                    text: "กรุณาตรวจสอบข้อมูลก่อนกดยืนยัน",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: 'var(--primary-pink)',
+                    cancelButtonColor: '#888',
+                    confirmButtonText: 'ยืนยัน',
+                    cancelButtonText: 'ยกเลิก'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // ส่งข้อมูลฟอร์ม
+                        // Developer จะต้องเขียนโค้ดส่งข้อมูลไปยัง Google Sheet ตรงนี้
+                        // form.submit(); <-- หากต้องการให้ฟอร์มทำงานตาม action ที่ตั้งไว้
+                        
+                        Swal.fire({
+                           title: 'ลงทะเบียนสำเร็จ!',
+                           text: 'ขอบคุณที่ให้ข้อมูลค่ะ',
+                           icon: 'success',
+                           confirmButtonColor: 'var(--primary-pink)'
+                        }).then(() => {
+                            liff.closeWindow(); // ปิดหน้าต่าง LIFF
+                        });
+                    }
+                });
+            });
         });
     </script>
 </body>
