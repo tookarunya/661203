@@ -46,6 +46,7 @@
                     <input type="hidden" id="uname" name="UName">
                     <input type="hidden" id="upic" name="Upic">
                     <input type="hidden" id="timestamp" name="Timestamp">
+                    <input type="hidden" id="approve" name="Approve" value="">
 
                     <div class="space-y-4">
                         <div>
@@ -130,14 +131,38 @@
             document.getElementById('timestamp').value = '00:00';
             document.getElementById('submit').disabled = true;
             document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
-            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-                .then(response => { sendLiffMessage(); })
-                .catch(error => {
-                    console.error('Error!', error.message);
-                    alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง");
-                    document.getElementById('submit').disabled = false;
-                    document.getElementById('submit').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน';
-                });
+
+    // 1. สร้าง object FormData ว่างๆ ขึ้นมาใหม่
+    const formData = new FormData();
+
+    // 2. ดึงข้อมูลจากแต่ละช่อง และจัดรูปแบบเวลา
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+    // 3. นำข้อมูลมาใส่ใน formData ทีละรายการ "ตามลำดับที่คุณต้องการ"
+    formData.append('Timestamp', formattedTime);
+    formData.append('Uid', document.getElementById('uid').value);
+    formData.append('UName', document.getElementById('uname').value);
+    formData.append('number4', document.getElementById('number4').value); // ชื่อ
+    formData.append('number5', document.getElementById('number5').value); // นามสกุล
+    formData.append('number3', document.getElementById('number3').value); // อีเมล
+    formData.append('tel', document.getElementById('tel').value);           // เบอร์โทร
+    formData.append('number1', document.getElementById('number1').value); // เลขใบประกอบ
+    formData.append('Approve', document.getElementById('approve').value);   // Approve
+
+    // 4. ส่งข้อมูลที่จัดลำดับใหม่แล้ว
+    fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => { sendLiffMessage(); })
+        .catch(error => {
+            console.error('Error!', error.message);
+            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง");
+            document.getElementById('submit').disabled = false;
+            document.getElementById('submit').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน';
+        });
+            
         });
         function sendLiffMessage() {
             const picURL = document.getElementById("upic").value;
