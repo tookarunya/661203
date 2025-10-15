@@ -127,7 +127,16 @@
         const form = document.forms['google-sheet'];
         form.addEventListener('submit', e => {
             e.preventDefault();
-            document.getElementById('timestamp').value = '00:00';
+            // document.getElementById('timestamp').value = '00:00';
+            
+                const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+    document.getElementById('timestamp').value = formattedTime;
+            
+            
             document.getElementById('submit').disabled = true;
             document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
             fetch(scriptURL, { method: 'POST', body: new FormData(form) })
