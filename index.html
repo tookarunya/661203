@@ -130,7 +130,6 @@
 <script type="text/javascript">
     // ====================================================================
     // 1. LIFF INITIALIZATION & PROFILE FETCHING
-    // ส่วนนี้จะทำงานเมื่อเปิดหน้าเว็บ เพื่อดึงข้อมูลโปรไฟล์ LINE
     // ====================================================================
     window.onload = function() {
         initializeLiff("2007356106-xpYMlK8v");
@@ -138,13 +137,8 @@
 
     function initializeLiff(myLiffId) {
         liff.init({ liffId: myLiffId })
-            .then(() => {
-                getid();
-            })
-            .catch(err => {
-                console.error("LIFF Initialization failed", err);
-                alert("ไม่สามารถเชื่อมต่อกับ LINE ได้ โปรดลองอีกครั้ง");
-            });
+            .then(() => { getid(); })
+            .catch(err => { console.error("LIFF Initialization failed", err); alert("ไม่สามารถเชื่อมต่อกับ LINE ได้ โปรดลองอีกครั้ง"); });
     }
 
     function getid() {
@@ -154,45 +148,32 @@
             document.getElementById("uname_display").value = profile.displayName;
             document.getElementById("upic").value = profile.pictureUrl;
             document.getElementById("picURL").src = profile.pictureUrl;
-        }).catch(err => {
-            console.error("Failed to get profile", err);
-            alert("ไม่สามารถดึงข้อมูลโปรไฟล์ LINE ได้ โปรดลองอีกครั้ง");
-        });
+        }).catch(err => { console.error("Failed to get profile", err); alert("ไม่สามารถดึงข้อมูลโปรไฟล์ LINE ได้ โปรดลองอีกครั้ง"); });
     }
 
     // ====================================================================
     // 2. FORM SUBMISSION TO GOOGLE SHEETS
-    // ส่วนนี้จะทำงานเมื่อผู้ใช้กดปุ่ม "ลงทะเบียน"
     // ====================================================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
     const form = document.forms['google-sheet'];
 
     form.addEventListener('submit', e => {
         e.preventDefault();
-        
-        // กำหนดค่าเวลาเป็น 00:00
         document.getElementById('timestamp').value = '00:00';
-        
-        // ปิดการใช้งานปุ่มเพื่อป้องกันการส่งซ้ำ
         document.getElementById('submit').disabled = true;
         document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
 
         fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-            .then(response => {
-                // หากบันทึกข้อมูลลงชีตสำเร็จ ให้ส่งข้อความ LIFF
-                sendLiffMessage();
-            })
+            .then(response => { sendLiffMessage(); })
             .catch(error => {
                 console.error('Error!', error.message);
                 alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง");
-                // หากผิดพลาด ให้เปิดใช้งานปุ่มอีกครั้ง
                 document.getElementById('submit').disabled = false;
                 document.getElementById('submit').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน';
             });
     });
 
     function sendLiffMessage() {
-        // ฟังก์ชันนี้ใช้สร้างและส่งข้อความ Flex Message กลับไปใน LINE
         const picURL = document.getElementById("upic").value;
         const tel = document.getElementById("tel").value;
         const number1 = document.getElementById("number1").value;
@@ -200,8 +181,7 @@
         const number5 = document.getElementById("number5").value;
 
         liff.sendMessages([{
-            type: "flex",
-            altText: "ลงทะเบียนสำเร็จ",
+            type: "flex", altText: "ลงทะเบียนสำเร็จ",
             contents: {
                 "type": "bubble", "hero": {"type": "image", "url": picURL, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover"},
                 "body": {"type": "box", "layout": "vertical", "spacing": "md", "contents": [
@@ -213,49 +193,25 @@
                     ]}
                 ]}
             }
-        }]).then(() => {
-            liff.closeWindow();
-        }).catch((err) => {
-            console.error("Error sending message:", err);
-            liff.closeWindow(); // ปิดหน้าต่างแม้ว่าจะส่งข้อความไม่สำเร็จ
-        });
+        }]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
     }
 
-
-// ====================================================================
-    // 3. CHECKBOX & SUBMIT BUTTON LOGIC (IMPROVED)
-    // ส่วนนี้ใช้เปิด/ปิดปุ่ม "ลงทะเบียน" ตามการติ๊ก checkbox
+    // ====================================================================
+    // 3. CHECKBOX & SUBMIT BUTTON LOGIC
     // ====================================================================
     $(document).ready(function() {
-        console.log("jQuery is ready. Setting up button logic.");
-
-        // ฟังก์ชันสำหรับอัปเดตสถานะของปุ่ม
         function updateButtonState() {
-            var isChecked = $('#visto').is(':checked');
-            console.log("Checkbox is checked:", isChecked);
-            
-            if (isChecked) {
+            if ($('#visto').is(':checked')) {
                 $('#submit').prop('disabled', false);
-                console.log("Button ENABLED.");
             } else {
                 $('#submit').prop('disabled', true);
-                console.log("Button DISABLED.");
             }
         }
-
-        // เมื่อสถานะของ checkbox เปลี่ยน, ให้เรียกใช้ฟังก์ชันอัปเดตปุ่ม
-        $('#visto').on('change', function() {
-            console.log("Checkbox state changed!");
-            updateButtonState();
-        });
-
-        // เรียกใช้ฟังก์ชันหนึ่งครั้งตอนโหลดหน้าเว็บ เพื่อกำหนดสถานะเริ่มต้น
+        $('#visto').on('change', updateButtonState);
         updateButtonState();
     });
-
-    
 </script>
-
+    
 
 </body>
 </html>
