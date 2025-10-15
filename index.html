@@ -9,9 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* --- นี่คือส่วนของ CSS ที่รวมเข้ามาในไฟล์นี้เลย --- */
         :root {
-            --primary-pink: #D9AAB7;
+            --primary-pink: #D18DA1;
+            --light-pink-hover: #FDEEF4; /* สีชมพูอ่อนตอน Hover */
             --dark-gray: #5C5455;
             --light-gray: #DCDCDC;
             --background-white: #FCFBFB;
@@ -20,142 +20,83 @@
 
         body {
             font-family: 'Sarabun', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-white);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            color: var(--dark-gray);
+            margin: 0; padding: 0; background-color: var(--background-white);
+            display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh; color: var(--dark-gray);
         }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-            box-sizing: border-box;
-            margin-top: 40px;
-        }
-
-        .header-text {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header-text h1 {
-            font-size: 1.5rem;
-            color: var(--dark-gray);
-            margin-bottom: 5px;
-            font-weight: 400;
-        }
-
-        .header-text h2 {
-            font-size: 2.2rem;
-            color: var(--dark-gray);
-            margin-top: 0;
-            font-weight: 600;
-        }
+        .container { width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; margin-top: 40px; }
+        .header-text { text-align: center; margin-bottom: 30px; }
+        .header-text h1 { font-size: 1.5rem; color: var(--dark-gray); margin-bottom: 5px; font-weight: 400; }
+        .header-text h2 { font-size: 2.2rem; color: var(--dark-gray); margin-top: 0; font-weight: 600; }
 
         .profile-card {
-            display: flex;
-            align-items: center;
-            background-color: #FFFFFF;
-            padding: 15px 20px;
-            border-radius: 12px;
+            display: flex; align-items: center; background-color: #FFFFFF;
+            padding: 15px 20px; border-radius: 12px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
             margin-bottom: 30px;
         }
+        .profile-avatar img { width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
+        .profile-info p { margin: 0; font-size: 0.95rem; line-height: 1.5; }
 
-        .profile-avatar img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-right: 15px;
-            object-fit: cover;
+        .registration-form { background-color: #FFFFFF; padding: 25px 30px; border-radius: 12px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; }
+
+        .form-group input[type="text"] {
+            width: 100%; padding: 12px 15px; border: 1px solid var(--light-gray); border-radius: 8px;
+            font-size: 1rem; color: var(--dark-gray); box-sizing: border-box;
         }
+        .form-group input:focus { outline: none; border-color: var(--primary-pink); }
+        .form-group input:disabled { background-color: var(--disabled-bg); cursor: not-allowed; }
 
-        .profile-info p {
-            margin: 0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .registration-form {
-            background-color: #FFFFFF;
-            padding: 25px 30px;
-            border-radius: 12px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .form-group input[type="text"],
-        .form-group select {
+        /* --- CSS สำหรับ Dropdown คำนำหน้า (แก้ไขใหม่) --- */
+        #prefix {
+            -webkit-appearance: none; /* เอาดีไซน์เริ่มต้นของเบราว์เซอร์ออก */
+            -moz-appearance: none;
+            appearance: none;
             width: 100%;
             padding: 12px 15px;
             border: 1px solid var(--light-gray);
             border-radius: 8px;
+            background-color: #FFFFFF;
             font-size: 1rem;
             color: var(--dark-gray);
+            cursor: pointer;
             box-sizing: border-box;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235C5455%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: .65em auto;
+            transition: all 0.2s ease-in-out;
         }
-
-        .form-group input[type="text"]:focus,
-        .form-group select:focus {
+        /* เมื่อเอาเมาส์ไปชี้ */
+        #prefix:hover {
+            background-color: var(--light-pink-hover);
+            border-color: #EEDDE5;
+        }
+        /* เมื่อกดเลือก */
+        #prefix:focus {
             outline: none;
             border-color: var(--primary-pink);
+            box-shadow: 0 0 5px rgba(209, 141, 161, 0.5);
         }
+        #prefix:disabled {
+             background-color: var(--disabled-bg); cursor: not-allowed;
+             background-image: none;
+        }
+        /* ----------------------------------------------- */
 
-        .form-group input:disabled,
-        .form-group select:disabled {
-            background-color: var(--disabled-bg);
-            cursor: not-allowed;
-        }
-        
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin-top: 25px;
-            margin-bottom: 30px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-        }
-
-        .checkbox-group label {
-            font-size: 1rem;
-            cursor: pointer;
-        }
+        .checkbox-group { display: flex; align-items: center; margin-top: 25px; margin-bottom: 30px; }
+        .checkbox-group input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; }
+        .checkbox-group label { font-size: 1rem; cursor: pointer; }
 
         .submit-button {
-            width: 100%;
-            padding: 15px 20px;
-            background-color: var(--primary-pink);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            width: 100%; padding: 15px 20px; background-color: var(--primary-pink);
+            color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600;
+            cursor: pointer; transition: background-color 0.3s ease;
         }
-
-        .submit-button:hover {
-            background-color: #C69EA8;
-        }
+        .submit-button:hover { background-color: #C17C8E; }
     </style>
 </head>
 <body>
@@ -170,8 +111,8 @@
                 <img src="https://via.placeholder.com/60x60/f0e0e0/806060?text=👤" alt="Profile Avatar">
             </div>
             <div class="profile-info">
-                <p><strong>ชื่อโปรไฟล์ LINE:</strong> Patarda S.</p>
-                <p><strong>สถานะ:</strong> นิสิตเก่า</p>
+                <p><strong>ชื่อโปรไฟล์ LINE:</strong> [ชื่อที่ดึงจาก LINE]</p>
+                <p><strong>สถานะ:</strong> [สถานะที่ดึงจาก LINE]</p>
             </div>
         </div>
 
@@ -188,10 +129,21 @@
                 <label for="firstName">ชื่อ:</label>
                 <input type="text" id="firstName" name="firstName" placeholder="กรอกชื่อ">
             </div>
-
             <div class="form-group">
                 <label for="lastName">นามสกุล:</label>
                 <input type="text" id="lastName" name="lastName" placeholder="กรอกนามสกุล">
+            </div>
+            <div class="form-group">
+                <label for="studentId">รหัสประจำตัวนิสิต:</label>
+                <input type="text" id="studentId" name="studentId" placeholder="รหัสประจำตัวนิสิต">
+            </div>
+            <div class="form-group">
+                <label for="faculty">คณะ:</label>
+                <input type="text" id="faculty" name="faculty" placeholder="คณะ">
+            </div>
+            <div class="form-group">
+                <label for="major">สาขาวิชา:</label>
+                <input type="text" id="major" name="major" placeholder="สาขาวิชา">
             </div>
 
             <div class="checkbox-group">
@@ -206,12 +158,10 @@
     <script>
         document.getElementById('confirmData').addEventListener('change', function() {
             const form = document.getElementById('registrationForm');
-            const elements = form.querySelectorAll('input, select');
+            const elements = form.querySelectorAll('input[type="text"], select');
             
             elements.forEach(el => {
-                if (el.id !== 'confirmData') {
-                    el.disabled = this.checked;
-                }
+                el.disabled = this.checked;
             });
         });
     </script>
