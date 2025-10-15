@@ -16,6 +16,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style type="text/css">
+        body { font-family: 'line_seed_sans_th', sans-serif; }
+        .form-input:required:invalid+.invalid-feedback { display: block; }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'cu-pink': '#EC008C', 'cu-gray-text': '#58595B', 'cu-gray-light': '#D9D9D6', 'cu-bg-light': '#F4F4F4' }
+                }
+            }
+        }
+    </script>
+</head>
+
 <body class="bg-cu-bg-light flex flex-col items-center justify-center min-h-screen p-4">
 
     <div id="cover" style="display:block;" class="w-full">
@@ -60,7 +75,7 @@
                         <div>
                             <label for="tel" class="block text-sm font-medium text-cu-gray-text">เบอร์โทรศัพท์มือถือ</label>
                             <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเบอร์มือถือ 10 หลัก" required>
-                            <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง</div>
+                            <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเบอร์มือถือ 10 หลัก</div>
                         </div>
 
                         <div>
@@ -88,7 +103,7 @@
         </div>
     </div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
         // 1. LIFF INITIALIZATION & PROFILE FETCHING
         window.onload = function() {
             initializeLiff("2007356106-xpYMlK8v");
@@ -109,23 +124,20 @@
         }
 
         // 2. FORM SUBMISSION TO GOOGLE SHEETS
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS8RRNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
         const form = document.forms['google-sheet'];
         form.addEventListener('submit', e => {
             e.preventDefault();
             
-            // สร้างเวลาที่จัดรูปแบบแล้ว
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('timestamp').value = `${hours}:${minutes}:${seconds}`;
 
-            // ปิดปุ่ม
             document.getElementById('submit').disabled = true;
             document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
             
-            // ส่งข้อมูลทั้งฟอร์ม (ลำดับจะถูกกำหนดโดยตำแหน่งของ input ใน HTML)
             fetch(scriptURL, { method: 'POST', body: new FormData(form) })
                 .then(response => { sendLiffMessage(); })
                 .catch(error => {
