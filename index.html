@@ -19,18 +19,23 @@
 
     <style type="text/css">
         body { font-family: 'line_seed_sans_th', sans-serif; }
-        .form-input:required:invalid+.invalid-feedback { display: block; }
         
-        /* Custom styles for the new radio buttons */
-        .form-radio {
-            -webkit-appearance: none; -moz-appearance: none; appearance: none;
-            border-radius: 50%; width: 1.25em; height: 1.25em;
-            border: 2px solid #D1D5DB;
-            transition: 0.2s all linear;
-            margin-right: 0.5em; position: relative; top: 4px;
+        /* Custom styles for the new prefix button group */
+        .prefix-group input[type="radio"] { display: none; }
+        .prefix-group label {
+            border: 2px solid #E5E7EB;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 0.5rem;
         }
-        .form-radio:checked {
-            border: 6px solid #EC008C;
+        .prefix-group input[type="radio"]:checked+label {
+            background-color: #EC008C;
+            color: white;
+            border-color: #EC008C;
         }
     </style>
     
@@ -38,7 +43,13 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 'cu-pink': '#EC008C', 'cu-gray-text': '#58595B', 'cu-gray-light': '#F3F4F6', 'cu-bg-light': '#F9FAFB' }
+                    colors: { 
+                        'cu-pink': '#EC008C', 
+                        'cu-gray-text': '#58595B', 
+                        'cu-gray-light': '#F3F4F6', 
+                        'cu-bg-light': '#F9FAFB',
+                        'cu-pink-light': '#FEF2F9' // Added light pink for input background
+                    }
                 }
             }
         }
@@ -58,51 +69,43 @@
             <form id="loginForm" name="google-sheet" autocomplete="off" novalidate>
                 <input type="hidden" id="timestamp" name="Timestamp">
                 <input type="hidden" id="uid" name="Uid">
-                <input type="hidden" id="uname" name="UName"> <input type="hidden" id="number2" name="number2" value=""> <input type="hidden" id="upic" name="Upic">
+                <input type="hidden" id="uname" name="UName">
+                <input type="hidden" id="upic" name="Upic">
                 <input type="hidden" id="approve" name="Approve" value="">
+                <input type="hidden" id="number2" name="number2" value="">
 
                 <div class="space-y-5">
                     <div>
                         <label class="block text-sm font-medium text-cu-gray-text mb-2">คำนำหน้า <span class="text-red-500">*</span></label>
-                        <div class="flex space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio" name="Prefix" value="ภก." required checked>
-                                <span class="ml-2 text-cu-gray-text">เภสัชกร (ภก.)</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio" name="Prefix" value="ภญ.">
-                                <span class="ml-2 text-cu-gray-text">เภสัชกรหญิง (ภญ.)</span>
-                            </label>
+                        <div class="prefix-group flex space-x-3">
+                            <input type="radio" id="prefix1" name="Prefix" value="ภก." required><label for="prefix1">เภสัชกร (ภก.)</label>
+                            <input type="radio" id="prefix2" name="Prefix" value="ภญ."><label for="prefix2">เภสัชกรหญิง (ภญ.)</label>
                         </div>
                     </div>
                     
                     <div>
                         <label for="number1" class="block text-sm font-medium text-cu-gray-text">เลขใบประกอบวิชาชีพ <span class="text-red-500">*</span></label>
-                        <input type="tel" id="number1" name="number1" inputmode="numeric" pattern="[0-9]*" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกเฉพาะตัวเลข" required>
-                        <div class="invalid-feedback hidden text-red-500 text-sm mt-1">กรุณากรอกเลขใบประกอบ</div>
+                        <input type="tel" id="number1" name="number1" inputmode="numeric" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเฉพาะตัวเลข" required>
                     </div>
 
                     <div>
                         <label for="number4" class="block text-sm font-medium text-cu-gray-text">ชื่อ <span class="text-red-500">*</span></label>
-                        <input type="text" id="number4" name="number4" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกเฉพาะชื่อ" required>
-                        <div class="invalid-feedback hidden text-red-500 text-sm mt-1">กรุณากรอกชื่อ</div>
+                        <input type="text" id="number4" name="number4" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเฉพาะชื่อ" required>
                     </div>
 
                     <div>
                         <label for="number5" class="block text-sm font-medium text-cu-gray-text">นามสกุล <span class="text-red-500">*</span></label>
-                        <input type="text" id="number5" name="number5" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกนามสกุล" required>
-                        <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกนามสกุล</div>
+                        <input type="text" id="number5" name="number5" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกนามสกุล" required>
                     </div>
                     
                     <div>
                         <label for="number3" class="block text-sm font-medium text-cu-gray-text">Email</label>
-                        <input type="email" id="number3" name="number3" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกอีเมล">
+                        <input type="email" id="number3" name="number3" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกอีเมล">
                     </div>
 
                     <div>
                         <label for="tel" class="block text-sm font-medium text-cu-gray-text">เบอร์โทรศัพท์มือถือ <span class="text-red-500">*</span></label>
-                        <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกเบอร์มือถือ 10 หลัก" required>
-                        <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเบอร์มือถือ 10 หลัก</div>
+                        <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเบอร์มือถือ 10 หลัก" required>
                     </div>
                 </div>
                 
@@ -131,7 +134,6 @@
         async function initializeLiff() {
             try {
                 await liff.init({ liffId: "2007356106-xpYMlK8v" });
-
                 if (!liff.isLoggedIn()) {
                     document.getElementById('loading-message').innerHTML = '<button id="login-button" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg">เข้าสู่ระบบด้วย LINE</button>';
                     document.getElementById('login-button').onclick = () => {
@@ -149,9 +151,8 @@
         async function getProfileAndShowForm() {
             try {
                 const profile = await liff.getProfile();
-                // Fixed: Populate the hidden UName field
-                document.getElementById("uname").value = profile.displayName; 
                 document.getElementById("uid").value = profile.userId;
+                document.getElementById("uname").value = profile.displayName;
                 document.getElementById("upic").value = profile.pictureUrl;
                 document.getElementById("picURL").src = profile.pictureUrl;
                 document.getElementById("displayName").innerText = profile.displayName;
@@ -170,7 +171,6 @@
 
         form.addEventListener('submit', e => {
             e.preventDefault();
-
             Swal.fire({
                 title: 'สำเร็จ!',
                 text: 'เราได้รับข้อมูลของคุณเรียบร้อยแล้วค่ะ',
@@ -207,28 +207,29 @@
                     { "type": "text", "text": "สถานะ: รอการตรวจสอบสิทธิ์", "size": "sm", "color": "#555555", "margin": "md" },
                     { "type": "text", "text": "เจ้าหน้าที่จะดำเนินการตรวจสอบข้อมูลและแจ้งผลให้ท่านทราบอีกครั้ง", "wrap": true, "color": "#AAAAAA", "size": "xs", "margin": "md" }
                 ]}}
-            }]).then(() => {
-                liff.closeWindow();
-            }).catch((err) => {
-                console.error("Error sending message:", err);
-                liff.closeWindow();
-            });
+            }]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
         }
         
-        // 3. UI LOGIC (Checkbox and Button)
+        // 3. UI LOGIC
         document.addEventListener('DOMContentLoaded', function() {
             initializeLiff(); 
 
             const checkbox = document.getElementById('visto');
             const submitButton = document.getElementById('submit');
             const checkboxLabel = document.getElementById('visto-label');
+            const formInputs = document.querySelectorAll('.form-input');
 
             function updateUIState() {
+                // Enable/disable submit button
                 submitButton.disabled = !checkbox.checked;
+
+                // Change background colors
                 if (checkbox.checked) {
                     checkboxLabel.classList.add('bg-cu-gray-light');
+                    formInputs.forEach(input => input.classList.add('bg-cu-pink-light'));
                 } else {
                     checkboxLabel.classList.remove('bg-cu-gray-light');
+                    formInputs.forEach(input => input.classList.remove('bg-cu-pink-light'));
                 }
             }
             checkbox.addEventListener('change', updateUIState);
