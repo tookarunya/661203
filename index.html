@@ -196,20 +196,26 @@
         }]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
     }
 
+// ====================================================================
+    // 3. CHECKBOX & SUBMIT BUTTON LOGIC (VANILLA JAVASCRIPT)
     // ====================================================================
-    // 3. CHECKBOX & SUBMIT BUTTON LOGIC
-    // ====================================================================
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkbox = document.getElementById('visto');
+        const submitButton = document.getElementById('submit');
+
         function updateButtonState() {
-            if ($('#visto').is(':checked')) {
-                $('#submit').prop('disabled', false);
-            } else {
-                $('#submit').prop('disabled', true);
-            }
+            // ถ้า checkbox ถูกติ๊ก (true) ให้ปุ่มกดได้ (disabled = false)
+            // ถ้า checkbox ไม่ถูกติ๊ก (false) ให้ปุ่มกดไม่ได้ (disabled = true)
+            submitButton.disabled = !checkbox.checked;
         }
-        $('#visto').on('change', updateButtonState);
+
+        // เมื่อมีการเปลี่ยนแปลงที่ checkbox ให้เรียกใช้ฟังก์ชันอัปเดตปุ่ม
+        checkbox.addEventListener('change', updateButtonState);
+        
+        // เรียกใช้ฟังก์ชันหนึ่งครั้งตอนเปิดหน้าเว็บ เพื่อตั้งค่าเริ่มต้นให้ถูกต้อง
         updateButtonState();
     });
+
 </script>
     
 
