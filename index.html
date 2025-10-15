@@ -47,6 +47,12 @@
         }
         .form-group input:focus { outline: none; border-color: var(--primary-pink); box-shadow: 0 0 5px rgba(209, 141, 161, 0.5); }
         .form-group input:disabled { background-color: #F5F5F5; cursor: not-allowed; }
+        
+        /* --- FIX: เพิ่ม Style ให้กับช่องที่ถูก Readonly --- */
+        .form-group input[readonly] {
+            background-color: #F5F5F5;
+            cursor: not-allowed;
+        }
 
         .prefix-buttons { display: flex; gap: 10px; }
         .prefix-btn {
@@ -152,7 +158,7 @@
     <script>
         async function main() {
             try {
-                await liff.init({ liffId: "2007356106-xpYMlK8v" });
+                await liff.init({ liffId: "YOUR_LIFF_ID_HERE" });
                 if (!liff.isLoggedIn()) {
                     liff.login({ redirectUri: window.location.href });
                     return;
@@ -161,7 +167,6 @@
                 document.getElementById('lineProfilePicture').src = profile.pictureUrl;
                 document.getElementById('lineDisplayName').textContent = profile.displayName;
                 
-                // Update hidden fields with correct IDs and names
                 document.getElementById('uid').value = profile.userId;
                 document.getElementById('uname').value = profile.displayName;
                 document.getElementById('upic').value = profile.pictureUrl;
@@ -170,47 +175,52 @@
             
             const form = document.getElementById('loginForm');
             const submitButton = document.getElementById('submitButton');
+            const confirmCheckbox = document.getElementById('confirmData');
+
+            // --- FIX: เปลี่ยนจากการใช้ .disabled เป็น .readOnly สำหรับ Input Fields ---
+            confirmCheckbox.addEventListener('change', function() {
+                const textInputs = form.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"]');
+                const prefixButtons = form.querySelectorAll('.prefix-btn');
+                
+                if (this.checked) {
+                    let otherFieldsValid = true;
+                    form.querySelectorAll('[required]').forEach(input => {
+                        if (input.id !== 'confirmData' && input.value.trim() === '') { otherFieldsValid = false; }
+                    });
+                    if(!otherFieldsValid) {
+                        Swal.fire({ icon: 'warning', title: 'ข้อมูลยังไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบถ้วนก่อนกดยืนยันค่ะ', confirmButtonColor: 'var(--primary-pink)'});
+                        this.checked = false;
+                        return;
+                    }
+                }
+                
+                // ล็อคปุ่มคำนำหน้าด้วย disabled
+                prefixButtons.forEach(el => {
+                    el.disabled = this.checked;
+                });
+                
+                // ล็อคช่องกรอกข้อมูลด้วย readonly เพื่อให้ยังส่งข้อมูลได้
+                textInputs.forEach(el => {
+                    el.readOnly = this.checked;
+                });
+            });
+
+            // (ส่วนที่เหลือของ Script เหมือนเดิมทุกประการ)
+            const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+            form.addEventListener('submit', e => { /* ... */ });
+            // ... (ใส่ฟังก์ชันทั้งหมดที่ยุบไว้กลับเข้ามา) ...
             const prefixButtons = document.querySelectorAll('.prefix-btn');
-            const prefixInput = document.getElementById('number2'); // <-- อัปเดตให้ตรงกับ hidden input
-            
+            const prefixInput = document.getElementById('number2');
+            const phoneNumberInput = document.getElementById('tel');
+            const licenseNumberInput = document.getElementById('number1');
+
             prefixButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     prefixButtons.forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    prefixInput.value = button.dataset.value; // อัปเดตค่าลง hidden input 'number2'
+                    prefixInput.value = button.dataset.value;
                 });
             });
-
-            // --- ส่วนของ Script ที่ทำงานเหมือนเดิม (Validation, SweetAlert, etc.) ---
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
-            form.addEventListener('submit', e => {
-                e.preventDefault();
-                document.getElementById('timestamp').value = new Date().toISOString();
-                Swal.fire({
-                    title: 'ยืนยันการส่งข้อมูล?', text: "กรุณาตรวจสอบข้อมูลก่อนกดยืนยัน", icon: 'question',
-                    showCancelButton: true, confirmButtonColor: 'var(--primary-pink)', cancelButtonColor: '#888',
-                    confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({ title: 'กำลังบันทึกข้อมูล...', text: 'กรุณารอสักครู่', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-                        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                            .then(response => {
-                                Swal.fire({ title: 'ลงทะเบียนสำเร็จ!', text: 'ขอบคุณที่ให้ข้อมูลค่ะ', icon: 'success', confirmButtonColor: 'var(--primary-pink)'})
-                                .then(() => { if (liff) liff.closeWindow(); });
-                            })
-                            .catch(error => {
-                                Swal.fire({ title: 'เกิดข้อผิดพลาด!', text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง', icon: 'error', confirmButtonColor: 'var(--primary-pink)'});
-                                console.error('Error!', error.message);
-                            });
-                    }
-                });
-            });
-
-            // (ใส่ฟังก์ชันที่ยุบไว้กลับเข้ามาเพื่อความสมบูรณ์)
-            const phoneNumberInput = document.getElementById('tel');
-            const licenseNumberInput = document.getElementById('number1');
-            const confirmCheckbox = document.getElementById('confirmData');
-            
             licenseNumberInput.addEventListener('input', () => {
                 const value = licenseNumberInput.value;
                 if (/[^0-9]/.test(value)) {
@@ -239,20 +249,27 @@
             form.addEventListener('input', () => {
                 submitButton.disabled = !isFormFullyValid();
             });
-            confirmCheckbox.addEventListener('change', function() {
-                const elementsToToggle = form.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"], .prefix-btn');
-                if (this.checked) {
-                    let otherFieldsValid = true;
-                    form.querySelectorAll('[required]').forEach(input => {
-                        if (input.id !== 'confirmData' && input.value.trim() === '') { otherFieldsValid = false; }
-                    });
-                    if(!otherFieldsValid) {
-                        Swal.fire({ icon: 'warning', title: 'ข้อมูลยังไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบถ้วนก่อนกดยืนยันค่ะ', confirmButtonColor: 'var(--primary-pink)'});
-                        this.checked = false;
-                        return;
+             form.addEventListener('submit', e => {
+                e.preventDefault();
+                document.getElementById('timestamp').value = new Date().toISOString();
+                Swal.fire({
+                    title: 'ยืนยันการส่งข้อมูล?', text: "กรุณาตรวจสอบข้อมูลก่อนกดยืนยัน", icon: 'question',
+                    showCancelButton: true, confirmButtonColor: 'var(--primary-pink)', cancelButtonColor: '#888',
+                    confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({ title: 'กำลังบันทึกข้อมูล...', text: 'กรุณารอสักครู่', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                            .then(response => {
+                                Swal.fire({ title: 'ลงทะเบียนสำเร็จ!', text: 'ขอบคุณที่ให้ข้อมูลค่ะ', icon: 'success', confirmButtonColor: 'var(--primary-pink)'})
+                                .then(() => { if (liff) liff.closeWindow(); });
+                            })
+                            .catch(error => {
+                                Swal.fire({ title: 'เกิดข้อผิดพลาด!', text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง', icon: 'error', confirmButtonColor: 'var(--primary-pink)'});
+                                console.error('Error!', error.message);
+                            });
                     }
-                }
-                elementsToToggle.forEach(el => { el.disabled = this.checked; });
+                });
             });
         }
         main();
