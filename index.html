@@ -1,274 +1,215 @@
-<!DOCTYPE html>
-<html lang="th">
+:root {
+    --primary-pink: #D9AAB7;
+    --dark-gray: #5C5455;
+    --light-gray: #DCDCDC;
+    --background-white: #FCFBFB;
+    --disabled-bg: #F5F5F5;
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบฟอร์มลงทะเบียน</title>
+body {
+    font-family: 'Sarabun', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-white);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    min-height: 100vh;
+    color: var(--dark-gray);
+    position: relative;
+    overflow-x: hidden;
+}
 
-    <script src="https://cdn.tailwindcss.com"></script>
+/* Background pattern */
+.background-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://i.imgur.com/your-sakura-pattern.png'); /* Replace with your actual sakura pattern image */
+    background-repeat: no-repeat;
+    background-position: top right, bottom left;
+    background-size: 200px; /* Adjust size as needed */
+    opacity: 0.3; /* Make it subtle */
+    z-index: -1;
+}
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="https://bit.ly/fontiton5" type="text/css" charset="utf-8" />
+.container {
+    width: 100%;
+    max-width: 500px; /* Max width for content */
+    padding: 20px;
+    box-sizing: border-box;
+    margin-top: 40px; /* Space from top */
+}
 
-    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+/* Header Text */
+.header-text {
+    text-align: center;
+    margin-bottom: 30px;
+}
 
-    <style type="text/css">
-        body { font-family: 'line_seed_sans_th', sans-serif; }
-        
-        .prefix-group input[type="radio"] { display: none; }
-        .prefix-group label {
-            border: 2px solid #E5E7EB; padding: 0.75rem 1rem; cursor: pointer;
-            transition: all 0.2s ease-in-out; width: 100%; text-align: center;
-            font-weight: 600; border-radius: 0.5rem;
-        }
-        .prefix-group input[type="radio"]:checked+label {
-            background-color: #EC008C; color: white; border-color: #EC008C;
-        }
-    </style>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { 
-                        'cu-pink': '#EC008C', 
-                        'cu-gray-text': '#374151', 
-                        'cu-gray-light': '#F3F4F6', 
-                        'cu-bg-light': '#F9FAFB',
-                        'cu-pink-light': '#FEF2F9'
-                    }
-                }
-            }
-        }
-    </script>
-</head>
+.header-text h1 {
+    font-size: 1.5rem; /* Adjust as needed */
+    color: var(--dark-gray);
+    margin-bottom: 5px;
+    font-weight: 400; /* Regular weight */
+}
 
-<body class="bg-cu-bg-light flex flex-col items-center justify-center min-h-screen p-4">
+.header-text h2 {
+    font-size: 2.2rem; /* Larger for emphasis */
+    color: var(--dark-gray);
+    margin-top: 0;
+    font-weight: 600; /* Semi-bold */
+}
 
-    <div id="main-content" class="w-full max-w-md mx-auto" style="display: none;">
-        <div class="bg-white rounded-2xl shadow-lg">
-            
-            <div class="text-center pt-6 px-6">
-                <h1 class="text-xl font-bold text-cu-gray-text">ลงทะเบียนนิสิตเก่า</h1>
-                <h2 class="text-lg text-cu-pink font-semibold">คณะเภสัชศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h2>
-            </div>
+/* Profile Card */
+.profile-card {
+    display: flex;
+    align-items: center;
+    background-color: #FFFFFF;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    margin-bottom: 30px;
+}
 
-            <div id="profile-section" class="flex items-center bg-cu-gray-light p-4 rounded-lg my-6 mx-6">
-                <img id="picURL" class="w-16 h-16 rounded-full border-2 border-white" alt="Line Profile Picture">
-                <div class="ml-4">
-                    <p class="text-sm text-gray-600">ข้อมูล LINE ของคุณ:</p>
-                    <p id="displayName" class="text-base font-semibold bg-cu-pink text-white rounded-full py-1 px-3 inline-block mt-1"></p>
-                </div>
-            </div>
-            
-            <form id="loginForm" name="google-sheet" class="px-6 pb-6" autocomplete="off" novalidate>
-                <input type="hidden" id="timestamp" name="Timestamp">
-                <input type="hidden" id="uid" name="Uid">
-                <input type="hidden" id="uname" name="UName">
-                <input type="hidden" id="upic" name="Upic">
-                <input type="hidden" id="approve" name="Approve" value="">
-                <input type="hidden" id="number2" name="number2" value="">
+.profile-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
 
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-base font-semibold text-cu-gray-text mb-2">คำนำหน้า <span class="text-red-500">*</span></label>
-                        <div class="prefix-group flex space-x-3">
-                            <input type="radio" id="prefix1" name="Prefix" value="ภก." required><label for="prefix1">เภสัชกร (ภก.)</label>
-                            <input type="radio" id="prefix2" name="Prefix" value="ภญ."><label for="prefix2">เภสัชกรหญิง (ภญ.)</label>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="number1" class="block text-base font-semibold text-cu-gray-text">เลขใบประกอบวิชาชีพ <span class="text-red-500">*</span></label>
-                        <input type="tel" id="number1" name="number1" inputmode="numeric" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเฉพาะตัวเลข" required>
-                    </div>
+.profile-info p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--dark-gray);
+}
 
-                    <div>
-                        <label for="number4" class="block text-base font-semibold text-cu-gray-text">ชื่อ <span class="text-red-500">*</span></label>
-                        <input type="text" id="number4" name="number4" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเฉพาะชื่อ" required>
-                    </div>
+/* Registration Form */
+.registration-form {
+    background-color: #FFFFFF;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03); /* Lighter shadow for form */
+}
 
-                    <div>
-                        <label for="number5" class="block text-base font-semibold text-cu-gray-text">นามสกุล <span class="text-red-500">*</span></label>
-                        <input type="text" id="number5" name="number5" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกนามสกุล" required>
-                    </div>
-                    
-                    <div>
-                        <label for="number3" class="block text-base font-semibold text-cu-gray-text">Email</label>
-                        <input type="email" id="number3" name="number3" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกอีเมล">
-                    </div>
+.form-group {
+    margin-bottom: 20px;
+}
 
-                    <div>
-                        <label for="tel" class="block text-base font-semibold text-cu-gray-text">เบอร์โทรศัพท์มือถือ <span class="text-red-500">*</span></label>
-                        <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเบอร์มือถือ 10 หลัก" required>
-                    </div>
-                </div>
-                
-                <div class="mt-6">
-                    <label id="visto-label" for="visto" class="flex items-center p-3 rounded-md transition-colors cursor-pointer">
-                        <input type="checkbox" id="visto" name="visto" class="h-4 w-4 rounded border-gray-300 text-cu-pink focus:ring-cu-pink" required>
-                        <span class="ml-3 text-base text-cu-gray-text">ยืนยันข้อมูลถูกต้อง</span>
-                    </label>
-                </div>
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+}
 
-                <div class="mt-8">
-                    <button type="submit" id="submit" class="w-full bg-cu-pink text-white font-bold py-3 px-4 rounded-lg hover:bg-opacity-90 disabled:bg-cu-gray-light disabled:cursor-not-allowed">
-                        <i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน
-                    </button>
-                </div>
-                 <div class="mt-6 text-center text-sm text-gray-500">
-                    ติดต่อฝ่ายไอที: <a href="tel:022188288" class="font-semibold text-cu-pink hover:underline">02-218-8288</a>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <div id="loading-screen" class="text-center">
-        <p id="loading-message" class="text-lg text-cu-gray-text">กำลังโหลดข้อมูล...</p>
-    </div>
+.form-group input[type="text"],
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--dark-gray);
+    box-sizing: border-box; /* Include padding in width */
+    transition: all 0.2s ease-in-out; /* Smooth transition */
+}
 
-    <script type="text/javascript">
-        // 1. LIFF INITIALIZATION & LOGIN LOGIC
-        async function initializeLiff() {
-            try {
-                await liff.init({ liffId: "2007356106-xpYMlK8v" });
-                if (!liff.isLoggedIn()) {
-                    document.getElementById('loading-message').innerHTML = '<button id="login-button" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg">เข้าสู่ระบบด้วย LINE</button>';
-                    document.getElementById('login-button').onclick = () => {
-                        liff.login({ redirectUri: window.location.href });
-                    };
-                } else {
-                    await getProfileAndShowForm();
-                }
-            } catch (err) {
-                console.error("LIFF Initialization failed", err);
-                document.getElementById('loading-message').innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อกับ LINE";
-            }
-        }
+.form-group input[type="text"]::placeholder {
+    color: #B0B0B0;
+}
 
-        async function getProfileAndShowForm() {
-            try {
-                const profile = await liff.getProfile();
-                document.getElementById("uid").value = profile.userId;
-                document.getElementById("uname").value = profile.displayName;
-                document.getElementById("upic").value = profile.pictureUrl;
-                document.getElementById("picURL").src = profile.pictureUrl;
-                document.getElementById("displayName").innerText = profile.displayName;
+/* Input Focus State */
+.form-group input[type="text"]:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-pink); /* Highlight border on focus */
+    box-shadow: 0 0 0 3px rgba(var(--primary-pink), 0.2); /* Soft focus ring */
+}
 
-                document.getElementById('main-content').style.display = 'block';
-                document.getElementById('loading-screen').style.display = 'none';
-            } catch (err) {
-                console.error("Failed to get profile", err);
-                document.getElementById('loading-message').innerText = "ไม่สามารถดึงข้อมูลโปรไฟล์ได้";
-            }
-        }
+/* Disabled state for inputs */
+.form-group input[type="text"]:disabled,
+.form-group select:disabled {
+    background-color: var(--disabled-bg);
+    border-color: #E0E0E0;
+    cursor: not-allowed;
+    color: #888888;
+}
 
-        // 2. FORM SUBMISSION
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
-        const form = document.forms['google-sheet'];
+/* Checkbox group */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 25px;
+    margin-bottom: 30px;
+}
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            Swal.fire({
-                title: 'สำเร็จ!',
-                text: 'เราได้รับข้อมูลของคุณเรียบร้อยแล้วค่ะ',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#EC008C'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('submit').disabled = true;
-                    document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
-                    sendDataToSheet();
-                    sendLiffMessage();
-                }
-            });
-        });
+.checkbox-group input[type="checkbox"] {
+    appearance: none; /* Hide default checkbox */
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-pink);
+    border-radius: 4px;
+    margin-right: 10px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        function sendDataToSheet() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('timestamp').value = `${hours}:${minutes}:${seconds}`;
-            
-            const selectedPrefix = document.querySelector('input[name="Prefix"]:checked');
-            if (selectedPrefix) {
-                document.getElementById('number2').value = selectedPrefix.value;
-            }
+.checkbox-group input[type="checkbox"]:checked {
+    background-color: var(--primary-pink);
+    border-color: var(--primary-pink);
+}
 
-            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-                .then(response => console.log('Success!', response))
-                .catch(error => console.error('Error!', error.message));
-        }
+.checkbox-group input[type="checkbox"]:checked::after {
+    content: '✔'; /* Checkmark symbol */
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
-        function sendLiffMessage() {
-            const profileData = {
-                picUrl: document.getElementById("upic").value,
-                prefix: document.querySelector('input[name="Prefix"]:checked')?.value || '-',
-                license: document.getElementById("number1").value,
-                firstName: document.getElementById("number4").value,
-                lastName: document.getElementById("number5").value,
-                email: document.getElementById("number3").value || '-',
-                tel: document.getElementById("tel").value,
-            };
+.checkbox-group label {
+    font-size: 1rem;
+    color: var(--dark-gray);
+    cursor: pointer;
+}
 
-            liff.sendMessages([
-                {"type": "flex", "altText": "สรุปข้อมูลการลงทะเบียน", "contents": { "type": "bubble",
-                    "hero": {"type": "image", "url": profileData.picUrl, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover"},
-                    "body": {"type": "box", "layout": "vertical", "spacing": "md", "contents": [
-                        {"type": "text", "text": "ข้อมูลที่คุณลงทะเบียน", "weight": "bold", "size": "xl", "color": "#EC008C"},
-                        {"type": "separator", "margin": "md"},
-                        {"type": "box", "layout": "vertical", "margin": "lg", "spacing": "sm", "contents": [
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "คำนำหน้า", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.prefix, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เลขใบประกอบฯ", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.license, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "ชื่อ-สกุล", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": `${profileData.firstName} ${profileData.lastName}`, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "Email", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.email, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เบอร์โทรศัพท์", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.tel, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]}
-                        ]},
-                        {"type": "separator", "margin": "xl"},
-                        {"type": "box", "layout": "vertical", "margin": "md", "contents": [
-                            { "type": "text", "text": "ลงทะเบียนสำเร็จ", "weight": "bold", "color": "#1DB446", "size": "md" },
-                            { "type": "text", "text": "สถานะ: รอการตรวจสอบสิทธิ์", "size": "sm", "color": "#555555", "margin": "sm" },
-                            { "type": "text", "text": "เจ้าหน้าที่จะดำเนินการตรวจสอบข้อมูลและแจ้งผลให้ท่านทราบอีกครั้ง", "wrap": true, "color": "#AAAAAA", "size": "xs", "margin": "sm" }
-                        ]}
-                    ]},
-                    "footer": {"type": "box", "layout": "vertical", "spacing": "sm", "contents": [
-                        {"type": "button", "style": "link", "height": "sm", "color": "#EC008C", "action": {"type": "uri", "label": "ติดต่อเจ้าหน้าที่ / แก้ไขข้อมูล", "uri": "https://line.me/R/ti/p/@YOUR_OA_ID"}},
-                        {"type": "spacer", "size": "sm"}
-                    ]}
-                }}
-            ]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
-        }
-        
-        // 3. UI LOGIC
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeLiff(); 
+/* Submit Button */
+.submit-button {
+    width: 100%;
+    padding: 15px 20px;
+    background-color: var(--primary-pink);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0px 4px 10px rgba(var(--primary-pink), 0.3); /* Soft shadow for button */
+}
 
-            const checkbox = document.getElementById('visto');
-            const submitButton = document.getElementById('submit');
-            const checkboxLabel = document.getElementById('visto-label');
-            const formInputs = document.querySelectorAll('.form-input');
+.submit-button:hover {
+    background-color: #C69EA8; /* Slightly darker pink on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
 
-            function updateUIState() {
-                submitButton.disabled = !checkbox.checked;
-                if (checkbox.checked) {
-                    checkboxLabel.classList.add('bg-cu-gray-light');
-                    formInputs.forEach(input => input.classList.add('bg-cu-pink-light'));
-                } else {
-                    checkboxLabel.classList.remove('bg-cu-gray-light');
-                    formInputs.forEach(input => input.classList.remove('bg-cu-pink-light'));
-                }
-            }
-            checkbox.addEventListener('change', updateUIState);
-            updateUIState();
-        });
-    </script>
-</body>
-
-</html>
+.submit-button:disabled {
+    background-color: #E0E0E0;
+    color: #A0A0A0;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
