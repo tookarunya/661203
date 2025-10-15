@@ -9,6 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
+        /* == Specification Summary ==
+         * Primary Color: #D18DA1 (Richer Pink)
+         * Hover Color: #FDEEF4 (Light Pink)
+         * Profile Card: Soft shadow, no border
+         * Prefix Dropdown: Custom styled <select> with hover effects
+         * Other Inputs: Simple, thin grey border
+         * All-in-one file structure
+        */
         :root {
             --primary-pink: #D18DA1;
             --light-pink-hover: #FDEEF4;
@@ -94,10 +102,10 @@
             </div>
         </div>
 
-        <form id="registrationForm" class="registration-form">
+        <form id="registrationForm" class="registration-form" action="YOUR_GOOGLE_SHEET_WEB_APP_URL" method="post">
             <input type="hidden" id="timestamp" name="timestamp">
-            <input type="hidden" id="userId" name="userId" value="[UserID ที่ดึงจาก LINE]">
-            <input type="hidden" id="lineName" name="lineName" value="[ชื่อไลน์ที่ดึงจาก LINE]">
+            <input type="hidden" id="userId" name="userId">
+            <input type="hidden" id="lineName" name="lineName">
 
             <div class="form-group">
                 <label for="prefix">คำนำหน้า:</label>
@@ -108,27 +116,27 @@
             </div>
             <div class="form-group">
                 <label for="firstName">ชื่อ:</label>
-                <input type="text" id="firstName" name="firstName" placeholder="กรอกชื่อจริง (ภาษาไทย)">
+                <input type="text" id="firstName" name="firstName" placeholder="กรอกชื่อจริง (ภาษาไทย)" required>
             </div>
             <div class="form-group">
                 <label for="lastName">นามสกุล:</label>
-                <input type="text" id="lastName" name="lastName" placeholder="กรอกนามสกุล (ภาษาไทย)">
+                <input type="text" id="lastName" name="lastName" placeholder="กรอกนามสกุล (ภาษาไทย)" required>
             </div>
             <div class="form-group">
                 <label for="licenseNumber">เลขใบประกอบวิชาชีพ:</label>
-                <input type="text" id="licenseNumber" name="licenseNumber" placeholder="กรอกเลขใบประกอบวิชาชีพ">
+                <input type="text" id="licenseNumber" name="licenseNumber" placeholder="กรอกเลขใบประกอบวิชาชีพ" required>
             </div>
             <div class="form-group">
                 <label for="phoneNumber">เบอร์โทรศัพท์:</label>
-                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="กรอกเบอร์โทรศัพท์">
+                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="กรอกเบอร์โทรศัพท์" required>
             </div>
             <div class="form-group">
                 <label for="email">อีเมล:</label>
-                <input type="email" id="email" name="email" placeholder="กรอกอีเมล">
+                <input type="email" id="email" name="email" placeholder="กรอกอีเมล" required>
             </div>
 
             <div class="checkbox-group">
-                <input type="checkbox" id="confirmData" name="confirmData">
+                <input type="checkbox" id="confirmData" name="confirmData" required>
                 <label for="confirmData">ยืนยันข้อมูลถูกต้อง</label>
             </div>
 
@@ -138,24 +146,24 @@
 
     <script>
         // --- ส่วนนี้คือส่วนที่ Developer ต้องทำการเชื่อมต่อกับ LINE API ---
-        // ตัวอย่างการดึงข้อมูลสมมติ (ต้องแก้ไขเป็นโค้ดจริง)
-        function getLineProfile() {
-            return {
-                userId: "U1234567890abcdef",
-                displayName: "Patarda S."
-            };
-        }
-        
-        // เมื่อหน้าเว็บโหลดเสร็จ
+        // LIFF (LINE Front-end Framework) should be initialized before this script runs.
+        // Example: liff.init({ liffId: "YOUR_LIFF_ID" }).then(() => { ... });
+
         window.onload = function() {
-            const profile = getLineProfile();
-            
-            // แสดงผลชื่อไลน์
-            document.getElementById('lineDisplayName').textContent = profile.displayName;
-            
-            // ใส่ค่า UserID และ ชื่อไลน์ ลงในฟอร์มที่ซ่อนไว้
-            document.getElementById('userId').value = profile.userId;
-            document.getElementById('lineName').value = profile.displayName;
+            // This function should be called after LIFF is initialized.
+            if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
+                liff.getProfile().then(profile => {
+                    document.getElementById('lineDisplayName').textContent = profile.displayName;
+                    document.getElementById('userId').value = profile.userId;
+                    document.getElementById('lineName').value = profile.displayName;
+                }).catch(err => console.error(err));
+            } else {
+                // Mock data for testing outside LINE
+                const mockProfile = { userId: "U12345_mock", displayName: "Test User" };
+                document.getElementById('lineDisplayName').textContent = mockProfile.displayName;
+                document.getElementById('userId').value = mockProfile.userId;
+                document.getElementById('lineName').value = mockProfile.displayName;
+            }
         };
 
         // --- จัดการการล็อคฟอร์ม ---
@@ -171,14 +179,7 @@
         
         // --- ตั้งค่า Timestamp เมื่อกดยืนยัน ---
         document.getElementById('registrationForm').addEventListener('submit', function(event) {
-            // ป้องกันการส่งฟอร์มทันที (สำหรับทดสอบ)
-            // event.preventDefault(); 
-            
-            // ตั้งค่าเวลาปัจจุบันลงในฟอร์มที่ซ่อนไว้
             document.getElementById('timestamp').value = new Date().toISOString();
-            
-            // ณ จุดนี้ โค้ดจะทำการส่งข้อมูลทั้งหมด (รวมทั้งที่ซ่อนไว้) ไปยัง Google Sheet
-            // alert('ข้อมูลพร้อมส่งไป Google Sheet แล้ว!');
         });
     </script>
 </body>
