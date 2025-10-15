@@ -51,14 +51,14 @@
 <body class="bg-cu-bg-light flex flex-col items-center justify-center min-h-screen p-4">
 
     <div id="main-content" class="w-full max-w-md mx-auto" style="display: none;">
-        <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="bg-white rounded-2xl shadow-lg">
             
-            <div class="text-center mb-6">
+            <div class="text-center pt-6 px-6">
                 <h1 class="text-xl font-bold text-cu-gray-text">ลงทะเบียนนิสิตเก่า</h1>
                 <h2 class="text-lg text-cu-pink font-semibold">คณะเภสัชศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h2>
             </div>
 
-            <div id="profile-section" class="flex items-center bg-cu-gray-light p-4 rounded-lg mb-6">
+            <div id="profile-section" class="flex items-center bg-cu-gray-light p-4 rounded-lg my-6 mx-6">
                 <img id="picURL" class="w-16 h-16 rounded-full border-2 border-white" alt="Line Profile Picture">
                 <div class="ml-4">
                     <p class="text-sm text-gray-600">ข้อมูล LINE ของคุณ:</p>
@@ -66,7 +66,7 @@
                 </div>
             </div>
             
-            <form id="loginForm" name="google-sheet" autocomplete="off" novalidate>
+            <form id="loginForm" name="google-sheet" class="px-6 pb-6" autocomplete="off" novalidate>
                 <input type="hidden" id="timestamp" name="Timestamp">
                 <input type="hidden" id="uid" name="Uid">
                 <input type="hidden" id="uname" name="UName">
@@ -105,4 +105,170 @@
 
                     <div>
                         <label for="tel" class="block text-base font-semibold text-cu-gray-text">เบอร์โทรศัพท์มือถือ <span class="text-red-500">*</span></label>
-                        <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-
+                        <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเบอร์มือถือ 10 หลัก" required>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label id="visto-label" for="visto" class="flex items-center p-3 rounded-md transition-colors cursor-pointer">
+                        <input type="checkbox" id="visto" name="visto" class="h-4 w-4 rounded border-gray-300 text-cu-pink focus:ring-cu-pink" required>
+                        <span class="ml-3 text-base text-cu-gray-text">ยืนยันข้อมูลถูกต้อง</span>
+                    </label>
+                </div>
+
+                <div class="mt-8">
+                    <button type="submit" id="submit" class="w-full bg-cu-pink text-white font-bold py-3 px-4 rounded-lg hover:bg-opacity-90 disabled:bg-cu-gray-light disabled:cursor-not-allowed">
+                        <i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน
+                    </button>
+                </div>
+                 <div class="mt-6 text-center text-sm text-gray-500">
+                    ติดต่อฝ่ายไอที: <a href="tel:022188288" class="font-semibold text-cu-pink hover:underline">02-218-8288</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="loading-screen" class="text-center">
+        <p id="loading-message" class="text-lg text-cu-gray-text">กำลังโหลดข้อมูล...</p>
+    </div>
+
+    <script type="text/javascript">
+        // 1. LIFF INITIALIZATION & LOGIN LOGIC
+        async function initializeLiff() {
+            try {
+                await liff.init({ liffId: "2007356106-xpYMlK8v" });
+                if (!liff.isLoggedIn()) {
+                    document.getElementById('loading-message').innerHTML = '<button id="login-button" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg">เข้าสู่ระบบด้วย LINE</button>';
+                    document.getElementById('login-button').onclick = () => {
+                        liff.login({ redirectUri: window.location.href });
+                    };
+                } else {
+                    await getProfileAndShowForm();
+                }
+            } catch (err) {
+                console.error("LIFF Initialization failed", err);
+                document.getElementById('loading-message').innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อกับ LINE";
+            }
+        }
+
+        async function getProfileAndShowForm() {
+            try {
+                const profile = await liff.getProfile();
+                document.getElementById("uid").value = profile.userId;
+                document.getElementById("uname").value = profile.displayName;
+                document.getElementById("upic").value = profile.pictureUrl;
+                document.getElementById("picURL").src = profile.pictureUrl;
+                document.getElementById("displayName").innerText = profile.displayName;
+
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('loading-screen').style.display = 'none';
+            } catch (err) {
+                console.error("Failed to get profile", err);
+                document.getElementById('loading-message').innerText = "ไม่สามารถดึงข้อมูลโปรไฟล์ได้";
+            }
+        }
+
+        // 2. FORM SUBMISSION
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
+        const form = document.forms['google-sheet'];
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            Swal.fire({
+                title: 'สำเร็จ!',
+                text: 'เราได้รับข้อมูลของคุณเรียบร้อยแล้วค่ะ',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#EC008C'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('submit').disabled = true;
+                    document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
+                    sendDataToSheet();
+                    sendLiffMessage();
+                }
+            });
+        });
+
+        function sendDataToSheet() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('timestamp').value = `${hours}:${minutes}:${seconds}`;
+            
+            const selectedPrefix = document.querySelector('input[name="Prefix"]:checked');
+            if (selectedPrefix) {
+                document.getElementById('number2').value = selectedPrefix.value;
+            }
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => console.log('Success!', response))
+                .catch(error => console.error('Error!', error.message));
+        }
+
+        function sendLiffMessage() {
+            const profileData = {
+                picUrl: document.getElementById("upic").value,
+                prefix: document.querySelector('input[name="Prefix"]:checked')?.value || '-',
+                license: document.getElementById("number1").value,
+                firstName: document.getElementById("number4").value,
+                lastName: document.getElementById("number5").value,
+                email: document.getElementById("number3").value || '-',
+                tel: document.getElementById("tel").value,
+            };
+
+            liff.sendMessages([
+                {"type": "flex", "altText": "สรุปข้อมูลการลงทะเบียน", "contents": { "type": "bubble",
+                    "hero": {"type": "image", "url": profileData.picUrl, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover"},
+                    "body": {"type": "box", "layout": "vertical", "spacing": "md", "contents": [
+                        {"type": "text", "text": "ข้อมูลที่คุณลงทะเบียน", "weight": "bold", "size": "xl", "color": "#EC008C"},
+                        {"type": "separator", "margin": "md"},
+                        {"type": "box", "layout": "vertical", "margin": "lg", "spacing": "sm", "contents": [
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "คำนำหน้า", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.prefix, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เลขใบประกอบฯ", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.license, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "ชื่อ-สกุล", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": `${profileData.firstName} ${profileData.lastName}`, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "Email", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.email, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เบอร์โทรศัพท์", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.tel, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]}
+                        ]},
+                        {"type": "separator", "margin": "xl"},
+                        {"type": "box", "layout": "vertical", "margin": "md", "contents": [
+                            { "type": "text", "text": "ลงทะเบียนสำเร็จ", "weight": "bold", "color": "#1DB446", "size": "md" },
+                            { "type": "text", "text": "สถานะ: รอการตรวจสอบสิทธิ์", "size": "sm", "color": "#555555", "margin": "sm" },
+                            { "type": "text", "text": "เจ้าหน้าที่จะดำเนินการตรวจสอบข้อมูลและแจ้งผลให้ท่านทราบอีกครั้ง", "wrap": true, "color": "#AAAAAA", "size": "xs", "margin": "sm" }
+                        ]}
+                    ]},
+                    "footer": {"type": "box", "layout": "vertical", "spacing": "sm", "contents": [
+                        {"type": "button", "style": "link", "height": "sm", "color": "#EC008C", "action": {"type": "uri", "label": "ติดต่อเจ้าหน้าที่ / แก้ไขข้อมูล", "uri": "https://line.me/R/ti/p/@YOUR_OA_ID"}},
+                        {"type": "spacer", "size": "sm"}
+                    ]}
+                }}
+            ]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
+        }
+        
+        // 3. UI LOGIC
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLiff(); 
+
+            const checkbox = document.getElementById('visto');
+            const submitButton = document.getElementById('submit');
+            const checkboxLabel = document.getElementById('visto-label');
+            const formInputs = document.querySelectorAll('.form-input');
+
+            function updateUIState() {
+                submitButton.disabled = !checkbox.checked;
+                if (checkbox.checked) {
+                    checkboxLabel.classList.add('bg-cu-gray-light');
+                    formInputs.forEach(input => input.classList.add('bg-cu-pink-light'));
+                } else {
+                    checkboxLabel.classList.remove('bg-cu-gray-light');
+                    formInputs.forEach(input => input.classList.remove('bg-cu-pink-light'));
+                }
+            }
+            checkbox.addEventListener('change', updateUIState);
+            updateUIState();
+        });
+    </script>
+</body>
+
+</html>
