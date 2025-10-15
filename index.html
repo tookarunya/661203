@@ -58,18 +58,21 @@
             </div>
             
             <form id="loginForm" name="google-sheet" class="p-6" autocomplete="off" novalidate>
+                <p id="displayName" class="text-xl font-semibold text-cu-gray-text text-center mb-6 -mt-2"></p>
+
                 <input type="hidden" id="timestamp" name="Timestamp">
                 <input type="hidden" id="uid" name="Uid">
                 <input type="hidden" id="uname" name="UName">
                 <input type="hidden" id="upic" name="Upic">
                 <input type="hidden" id="approve" name="Approve" value="">
-                
+                <input type="hidden" id="number2" name="number2" value="">
+
                 <div class="space-y-4">
                     <div>
                         <label class="block text-base font-semibold text-cu-gray-text mb-2">คำนำหน้า <span class="text-red-500">*</span></label>
                         <div class="prefix-group flex space-x-3">
-                            <input type="radio" id="prefix1" name="number2" value="ภก." required><label for="prefix1">เภสัชกร (ภก.)</label>
-                            <input type="radio" id="prefix2" name="number2" value="ภญ."><label for="prefix2">เภสัชกรหญิง (ภญ.)</label>
+                            <input type="radio" id="prefix1" name="Prefix" value="ภก." required><label for="prefix1">เภสัชกร (ภก.)</label>
+                            <input type="radio" id="prefix2" name="Prefix" value="ภญ."><label for="prefix2">เภสัชกรหญิง (ภญ.)</label>
                         </div>
                     </div>
                     
@@ -119,7 +122,7 @@
         <p id="loading-message" class="text-lg text-cu-gray-text">กำลังโหลดข้อมูล...</p>
     </div>
 
-    <script type="text-javascript">
+    <script type="text/javascript">
         // 1. LIFF INITIALIZATION & LOGIN LOGIC
         async function initializeLiff() {
             try {
@@ -145,6 +148,7 @@
                 document.getElementById("uname").value = profile.displayName;
                 document.getElementById("upic").value = profile.pictureUrl;
                 document.getElementById("picURL").src = profile.pictureUrl;
+                document.getElementById("displayName").innerText = profile.displayName;
 
                 document.getElementById('main-content').style.display = 'block';
                 document.getElementById('loading-screen').style.display = 'none';
@@ -182,6 +186,12 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('timestamp').value = `${hours}:${minutes}:${seconds}`;
+            
+            // This is the fix for the prefix: Set the value of the hidden "number2" input
+            const selectedPrefix = document.querySelector('input[name="Prefix"]:checked');
+            if (selectedPrefix) {
+                document.getElementById('number2').value = selectedPrefix.value;
+            }
 
             fetch(scriptURL, { method: 'POST', body: new FormData(form) })
                 .then(response => console.log('Success!', response))
@@ -189,28 +199,28 @@
         }
 
         function sendLiffMessage() {
-            const profile = {
+            const profileData = {
                 picUrl: document.getElementById("upic").value,
-                prefix: document.querySelector('input[name="number2"]:checked')?.value || '-',
+                prefix: document.querySelector('input[name="Prefix"]:checked')?.value || '-',
                 license: document.getElementById("number1").value,
                 firstName: document.getElementById("number4").value,
                 lastName: document.getElementById("number5").value,
-                email: document.getElementById("number3").value,
+                email: document.getElementById("number3").value || '-',
                 tel: document.getElementById("tel").value,
             };
 
             liff.sendMessages([
                 {"type": "flex", "altText": "สรุปข้อมูลการลงทะเบียน", "contents": { "type": "bubble",
-                    "hero": {"type": "image", "url": profile.picUrl, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover"},
+                    "hero": {"type": "image", "url": profileData.picUrl, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover"},
                     "body": {"type": "box", "layout": "vertical", "spacing": "md", "contents": [
                         {"type": "text", "text": "ข้อมูลที่คุณลงทะเบียน", "weight": "bold", "size": "xl", "color": "#EC008C"},
                         {"type": "separator", "margin": "md"},
                         {"type": "box", "layout": "vertical", "margin": "lg", "spacing": "sm", "contents": [
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "คำนำหน้า", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profile.prefix, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เลขใบประกอบฯ", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profile.license, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "ชื่อ-สกุล", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": `${profile.firstName} ${profile.lastName}`, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "Email", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profile.email || '-', "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
-                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เบอร์โทรศัพท์", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profile.tel, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]}
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "คำนำหน้า", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.prefix, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เลขใบประกอบฯ", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.license, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "ชื่อ-สกุล", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": `${profileData.firstName} ${profileData.lastName}`, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "Email", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.email, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เบอร์โทรศัพท์", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profileData.tel, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]}
                         ]},
                         {"type": "separator", "margin": "xl"},
                         {"type": "box", "layout": "vertical", "margin": "md", "contents": [
