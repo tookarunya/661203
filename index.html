@@ -9,24 +9,35 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link rel="stylesheet" href="https://bit.ly/fontiton5" type="text/css" charset="utf-8" />
 
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style type="text/css">
         body { font-family: 'line_seed_sans_th', sans-serif; }
         .form-input:required:invalid+.invalid-feedback { display: block; }
+        
+        /* Custom styles for radio button group */
+        .radio-group input[type="radio"] { display: none; }
+        .radio-group label {
+            border: 1px solid #D1D5DB; padding: 0.75rem 1rem; cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            width: 100%; text-align: center;
+        }
+        .radio-group input[type="radio"]:checked+label {
+            background-color: #EC008C; color: white; border-color: #EC008C;
+        }
     </style>
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 'cu-pink': '#EC008C', 'cu-gray-text': '#58595B', 'cu-gray-light': '#D9D9D6', 'cu-bg-light': '#F4F4F4' }
+                    colors: { 'cu-pink': '#EC008C', 'cu-gray-text': '#58595B', 'cu-gray-light': '#F3F4F6', 'cu-bg-light': '#F9FAFB' }
                 }
             }
         }
@@ -35,154 +46,165 @@
 
 <body class="bg-cu-bg-light flex flex-col items-center justify-center min-h-screen p-4">
 
-    <div id="loading-spinner" class="text-center">
-        <i class="fas fa-spinner fa-spin fa-3x text-cu-pink"></i>
-        <p class="mt-4 text-cu-gray-text">กำลังโหลดข้อมูล...</p>
-    </div>
+    <div id="main-content" class="w-full max-w-md mx-auto" style="display: none;">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            
+            <div id="profile-section" class="text-center mb-6">
+                <img id="picURL" class="w-24 h-24 rounded-full mx-auto border-4 border-cu-pink" alt="Line Profile Picture">
+                <p id="displayName" class="text-lg font-semibold text-cu-gray-text mt-3"></p>
+            </div>
+            
+            <form id="loginForm" name="google-sheet" autocomplete="off" novalidate>
+                <input type="hidden" id="timestamp" name="Timestamp">
+                <input type="hidden" id="uid" name="Uid">
+                <input type="hidden" id="upic" name="Upic">
+                <input type="hidden" id="approve" name="Approve" value="">
 
-    <div id="cover" style="display:none;" class="w-full">
-        <div id="loginPage" class="w-full max-w-md mx-auto">
-            <div class="bg-white rounded-2xl shadow-lg p-8">
-                
-                <div class="text-center mb-6">
-                    <img id="picURL" class="w-24 h-24 rounded-full mx-auto border-4 border-cu-pink" alt="Line Profile Picture">
-                    <p id="displayName" class="mt-4 text-xl font-semibold text-cu-gray-text"></p>
-                </div>
-                
-                <form id="loginForm" name="google-sheet" autocomplete="off" novalidate>
-                    <input type="hidden" id="timestamp" name="Timestamp">
-                    <input type="hidden" id="uid" name="Uid">
-                    <input type="hidden" id="uname" name="UName">
-                    <input type="hidden" id="upic" name="Upic">
-                    <input type="hidden" id="approve" name="Approve" value="">
-
-                    <div class="space-y-4">
-                        <div>
-                            <label for="number4" class="block text-sm font-medium text-cu-gray-text">ชื่อ</label>
-                            <input type="text" id="number4" name="number4" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเฉพาะชื่อ" required>
-                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกชื่อ</div>
-                        </div>
-
-                        <div>
-                            <label for="number5" class="block text-sm font-medium text-cu-gray-text">นามสกุล</label>
-                            <input type="text" id="number5" name="number5" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกนามสกุล" required>
-                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกนามสกุล</div>
-                        </div>
-                        
-                        <div>
-                            <label for="number3" class="block text-sm font-medium text-cu-gray-text">Email</label>
-                            <input type="email" id="number3" name="number3" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกอีเมล" required>
-                            <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกอีเมลให้ถูกต้อง</div>
-                        </div>
-
-                        <div>
-                            <label for="tel" class="block text-sm font-medium text-cu-gray-text">เบอร์โทรศัพท์มือถือ</label>
-                            <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเบอร์มือถือ 10 หลัก" required>
-                            <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเบอร์มือถือ 10 หลัก</div>
-                        </div>
-
-                        <div>
-                            <label for="number1" class="block text-sm font-medium text-cu-gray-text">เลขใบประกอบวิชาชีพ</label>
-                            <input type="tel" id="number1" name="number1" inputmode="numeric" pattern="[0-9]*" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเฉพาะตัวเลข" required>
-                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเลขใบประกอบ</div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-cu-gray-text mb-2">คำนำหน้า <span class="text-red-500">*</span></label>
+                        <div class="radio-group flex rounded-md overflow-hidden">
+                            <input type="radio" id="prefix1" name="Prefix" value="ภก." required><label for="prefix1" class="rounded-l-md">ภก.</label>
+                            <input type="radio" id="prefix2" name="Prefix" value="ภญ."><label for="prefix2" class="rounded-r-md">ภญ.</label>
                         </div>
                     </div>
                     
-                    <div class="mt-6">
-                        <label class="flex items-center">
-                            <input type="checkbox" id="visto" name="visto" class="h-4 w-4 rounded border-gray-300 text-cu-pink focus:ring-cu-pink" required>
-                            <span class="ml-2 text-sm text-cu-gray-text">ยอมรับเงื่อนไขตามข้อตกลง</span>
-                        </label>
-                         <div class="invalid-feedback hidden text-red-600 text-sm mt-1">หากไม่ยอมรับเงื่อนไขจะไม่สามารถลงทะเบียนได้</div>
+                    <div>
+                        <label for="number1" class="block text-sm font-medium text-cu-gray-text">เลขใบประกอบวิชาชีพ <span class="text-red-500">*</span></label>
+                        <input type="tel" id="number1" name="number1" inputmode="numeric" pattern="[0-9]*" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกเฉพาะตัวเลข" required>
+                        <div class="invalid-feedback hidden text-red-500 text-sm mt-1">กรุณากรอกเลขใบประกอบ</div>
                     </div>
 
-                    <div class="mt-8">
-                        <button type="submit" id="submit" class="w-full bg-cu-pink text-white font-bold py-3 px-4 rounded-lg hover:bg-opacity-90 transition duration-300 disabled:bg-cu-gray-light disabled:cursor-not-allowed">
-                            <i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน
-                        </button>
+                    <div>
+                        <label for="number4" class="block text-sm font-medium text-cu-gray-text">ชื่อ <span class="text-red-500">*</span></label>
+                        <input type="text" id="number4" name="number4" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกเฉพาะชื่อ" required>
+                        <div class="invalid-feedback hidden text-red-500 text-sm mt-1">กรุณากรอกชื่อ</div>
                     </div>
-                </form>
-            </div>
+
+                    <div>
+                        <label for="number5" class="block text-sm font-medium text-cu-gray-text">นามสกุล <span class="text-red-500">*</span></label>
+                        <input type="text" id="number5" name="number5" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกนามสกุล" required>
+                        <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกนามสกุล</div>
+                    </div>
+                    
+                    <div>
+                        <label for="number3" class="block text-sm font-medium text-cu-gray-text">Email</label>
+                        <input type="email" id="number3" name="number3" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกอีเมล">
+                    </div>
+
+                    <div>
+                        <label for="tel" class="block text-sm font-medium text-cu-gray-text">เบอร์โทรศัพท์มือถือ <span class="text-red-500">*</span></label>
+                        <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md" placeholder="กรอกเบอร์มือถือ 10 หลัก" required>
+                        <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเบอร์มือถือ 10 หลัก</div>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label id="visto-label" for="visto" class="flex items-center p-3 rounded-md transition-colors">
+                        <input type="checkbox" id="visto" name="visto" class="h-4 w-4 rounded border-gray-300 text-cu-pink focus:ring-cu-pink" required>
+                        <span class="ml-3 text-sm text-cu-gray-text">ยืนยันข้อมูลถูกต้อง</span>
+                    </label>
+                </div>
+
+                <div class="mt-8">
+                    <button type="submit" id="submit" class="w-full bg-cu-pink text-white font-bold py-3 px-4 rounded-lg hover:bg-opacity-90 disabled:bg-cu-gray-light disabled:cursor-not-allowed">
+                        <i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
+    
+    <div id="loading-screen" class="text-center">
+        <p id="loading-message" class="text-lg text-cu-gray-text">กำลังโหลดข้อมูล...</p>
     </div>
 
     <script type="text/javascript">
-        // 1. LIFF INITIALIZATION & PROFILE FETCHING
-        window.onload = function() {
-            initializeLiff("2007356106-xpYMlK8v");
-        };
-        function initializeLiff(myLiffId) {
-            liff.init({ liffId: myLiffId })
-                .then(() => {
-                    // 2. บังคับ Login ถ้าเปิดบนคอม
-                    if (!liff.isLoggedIn()) {
-                        liff.login();
-                    } else {
-                        getid();
-                    }
-                })
-                .catch(err => { console.error("LIFF Initialization failed", err); alert("ไม่สามารถเชื่อมต่อกับ LINE ได้ โปรดลองอีกครั้ง"); });
+        // 1. LIFF INITIALIZATION & LOGIN LOGIC
+        async function initializeLiff() {
+            try {
+                await liff.init({ liffId: "2007356106-xpYMlK8v" });
+
+                if (!liff.isLoggedIn()) {
+                    document.getElementById('loading-message').innerHTML = '<button id="login-button" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg">เข้าสู่ระบบด้วย LINE</button>';
+                    document.getElementById('login-button').onclick = () => {
+                        liff.login({ redirectUri: window.location.href });
+                    };
+                } else {
+                    await getProfileAndShowForm();
+                }
+            } catch (err) {
+                console.error("LIFF Initialization failed", err);
+                document.getElementById('loading-message').innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อกับ LINE";
+            }
         }
-        function getid() {
-            liff.getProfile().then(function(profile) {
+
+        async function getProfileAndShowForm() {
+            try {
+                const profile = await liff.getProfile();
                 document.getElementById("uid").value = profile.userId;
-                document.getElementById("uname").value = profile.displayName;
                 document.getElementById("upic").value = profile.pictureUrl;
                 document.getElementById("picURL").src = profile.pictureUrl;
-                // แสดงชื่อใต้รูปภาพ
-                document.getElementById("displayName").textContent = profile.displayName;
+                document.getElementById("displayName").innerText = profile.displayName;
 
-                // ซ่อน Spinner และแสดงฟอร์ม
-                document.getElementById("loading-spinner").style.display = "none";
-                document.getElementById("cover").style.display = "block";
-
-            }).catch(err => { console.error("Failed to get profile", err); alert("ไม่สามารถดึงข้อมูลโปรไฟล์ LINE ได้ โปรดลองอีกครั้ง"); });
+                // Show the main form and hide loading screen
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('loading-screen').style.display = 'none';
+            } catch (err) {
+                console.error("Failed to get profile", err);
+                document.getElementById('loading-message').innerText = "ไม่สามารถดึงข้อมูลโปรไฟล์ได้";
+            }
         }
 
         // 2. FORM SUBMISSION
         const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
         const form = document.forms['google-sheet'];
+
         form.addEventListener('submit', e => {
             e.preventDefault();
-            
+
+            // Show immediate feedback with SweetAlert
+            Swal.fire({
+                title: 'สำเร็จ!',
+                text: 'เราได้รับข้อมูลของคุณเรียบร้อยแล้วค่ะ',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#EC008C'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Start background tasks after user clicks OK
+                    document.getElementById('submit').disabled = true;
+                    document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
+
+                    // Prepare and send data to Google Sheet
+                    sendDataToSheet();
+                    
+                    // Send LIFF message and close window
+                    sendLiffMessage();
+                }
+            });
+        });
+
+        function sendDataToSheet() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('timestamp').value = `${hours}:${minutes}:${seconds}`;
 
-            document.getElementById('submit').disabled = true;
-            document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังบันทึก...';
-            
             fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-                .then(response => {
-                    // 4. แสดง SweetAlert เมื่อบันทึกสำเร็จ
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ลงทะเบียนสำเร็จ',
-                        text: 'เราได้รับข้อมูลของคุณเรียบร้อยแล้วค่ะ',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        // หลังจากกด OK, ค่อยส่งข้อความ LIFF และปิดหน้าต่าง
-                        sendLiffMessage();
-                    });
-                })
-                .catch(error => {
-                    console.error('Error!', error.message);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'เกิดข้อผิดพลาด',
-                        text: 'ไม่สามารถบันทึกข้อมูลได้ โปรดลองอีกครั้ง'
-                    });
-                    document.getElementById('submit').disabled = false;
-                    document.getElementById('submit').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน';
-                });
-        });
+                .then(response => console.log('Success!', response))
+                .catch(error => console.error('Error!', error.message));
+        }
 
         function sendLiffMessage() {
             liff.sendMessages([{
-                "type": "text",
-                "text": "สถานะ: รอการตรวจสอบสิทธิ์"
+                "type": "flex", "altText": "สถานะการลงทะเบียน",
+                "contents": { "type": "bubble", "body": { "type": "box", "layout": "vertical", "contents": [
+                    { "type": "text", "text": "ลงทะเบียนสำเร็จ", "weight": "bold", "color": "#1DB446", "size": "md" },
+                    { "type": "text", "text": "สถานะ: รอการตรวจสอบสิทธิ์", "size": "sm", "color": "#555555", "margin": "md" },
+                    { "type": "text", "text": "เจ้าหน้าที่จะดำเนินการตรวจสอบข้อมูลและแจ้งผลให้ท่านทราบอีกครั้ง", "wrap": true, "color": "#AAAAAA", "size": "xs", "margin": "md" }
+                ]}}
             }]).then(() => {
                 liff.closeWindow();
             }).catch((err) => {
@@ -190,16 +212,25 @@
                 liff.closeWindow();
             });
         }
-
-        // 3. CHECKBOX LOGIC
+        
+        // 3. UI LOGIC (Checkbox and Button)
         document.addEventListener('DOMContentLoaded', function() {
+            initializeLiff(); // Start LIFF process on page load
+
             const checkbox = document.getElementById('visto');
             const submitButton = document.getElementById('submit');
-            function updateButtonState() {
+            const checkboxLabel = document.getElementById('visto-label');
+
+            function updateUIState() {
                 submitButton.disabled = !checkbox.checked;
+                if (checkbox.checked) {
+                    checkboxLabel.classList.add('bg-cu-gray-light');
+                } else {
+                    checkboxLabel.classList.remove('bg-cu-gray-light');
+                }
             }
-            checkbox.addEventListener('change', updateButtonState);
-            updateButtonState();
+            checkbox.addEventListener('change', updateUIState);
+            updateUIState(); // Initial check
         });
     </script>
 </body>
