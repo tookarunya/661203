@@ -11,7 +11,8 @@
     
     <style>
         :root {
-            --primary-pink: #E64A85; /* <-- สีชมพูสดใสขึ้น */
+            /* FIX #2: ปรับกลับมาใช้สีชมพูที่สบายตา */
+            --primary-pink: #D18DA1; 
             --light-pink-hover: #FDEEF4;
             --dark-gray: #5C5455;
             --light-gray: #DCDCDC;
@@ -46,23 +47,17 @@
             width: 100%; padding: 12px 15px; border: 1px solid var(--light-gray); border-radius: 8px;
             font-size: 1rem; color: var(--dark-gray); box-sizing: border-box; transition: all 0.2s ease-in-out;
         }
-        .form-group input:focus { outline: none; border-color: var(--primary-pink); box-shadow: 0 0 5px rgba(230, 74, 133, 0.5); }
+        .form-group input:focus { outline: none; border-color: var(--primary-pink); box-shadow: 0 0 5px rgba(209, 141, 161, 0.5); }
         .form-group input:disabled { background-color: #F5F5F5; cursor: not-allowed; }
 
-        /* --- CSS สำหรับปุ่มคำนำหน้า --- */
         .prefix-buttons { display: flex; gap: 10px; }
         .prefix-btn {
             flex: 1; padding: 12px; border: 1px solid var(--light-gray); border-radius: 8px;
             background-color: #FFFFFF; color: var(--dark-gray); font-size: 1rem;
             font-family: 'Sarabun', sans-serif; cursor: pointer; transition: all 0.2s ease-in-out;
         }
-        .prefix-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .prefix-btn.active {
-            background-color: var(--primary-pink); color: white; border-color: var(--primary-pink);
-        }
+        .prefix-btn:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .prefix-btn.active { background-color: var(--primary-pink); color: white; border-color: var(--primary-pink); }
         .prefix-btn:disabled { background-color: #F5F5F5; transform: none; box-shadow: none; cursor: not-allowed;}
         
         .checkbox-group { display: flex; align-items: center; margin-top: 25px; margin-bottom: 30px; }
@@ -74,13 +69,8 @@
             border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600;
             cursor: pointer; transition: background-color 0.3s ease;
         }
-        .submit-button:hover { background-color: #D33A71; }
-        .submit-button:disabled {
-            background-color: var(--disabled-gray);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+        .submit-button:hover { background-color: #C17C8E; }
+        .submit-button:disabled { background-color: var(--disabled-gray); cursor: not-allowed; transform: none; box-shadow: none; }
     </style>
 </head>
 <body>
@@ -95,7 +85,7 @@
                 <img id="lineProfilePicture" src="https://via.placeholder.com/60x60/f0e0e0/806060?text=👤" alt="Profile Avatar">
             </div>
             <div class="profile-info">
-                <p><strong>ชื่อโปรไฟล์ LINE:</strong> <span id="lineDisplayName">[กรุณา Login]</span></p>
+                <p><strong>ชื่อโปรไฟล์ LINE:</strong> <span id="lineDisplayName">[กรุณา Login ผ่าน LINE]</span></p>
             </div>
         </div>
 
@@ -122,7 +112,7 @@
             </div>
             <div class="form-group">
                 <label for="licenseNumber">เลขใบประกอบวิชาชีพ:<span class="required-star">*</span></label>
-                <input type="text" inputmode="numeric" pattern="[0-9]*" id="licenseNumber" name="licenseNumber" placeholder="กรอกเฉพาะตัวเลข" required>
+                <input type="text" id="licenseNumber" name="licenseNumber" placeholder="กรอกเฉพาะตัวเลข" required>
             </div>
             <div class="form-group">
                 <label for="phoneNumber">เบอร์โทรศัพท์:<span class="required-star">*</span></label>
@@ -144,31 +134,34 @@
 
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        async function main() {
+            // ---------- FIX #1: LIFF Initialization and Login ----------
+            // ต้องนำ URL ไปเปิดใน LINE เท่านั้น ถึงจะทำงานส่วนนี้ได้ถูกต้อง
+            try {
+                await liff.init({ liffId: "YOUR_LIFF_ID_HERE" }); // <-- *** ใส่ LIFF ID ของคุณตรงนี้ ***
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                    return; // หยุดการทำงาน script ทันที รอหน้า reload หลัง login
+                }
+                const profile = await liff.getProfile();
+                document.getElementById('lineProfilePicture').src = profile.pictureUrl;
+                document.getElementById('lineDisplayName').textContent = profile.displayName;
+                document.getElementById('userId').value = profile.userId;
+                document.getElementById('lineName').value = profile.displayName;
+            } catch (err) {
+                console.error(err);
+                // อาจจะแสดงข้อความว่า "กรุณาเปิดใน LINE" ด้วย SweetAlert ก็ได้
+                Swal.fire('เกิดข้อผิดพลาด', 'กรุณาเปิดหน้านี้ผ่านแอปพลิเคชัน LINE ค่ะ', 'error');
+            }
+            
             const form = document.getElementById('registrationForm');
             const submitButton = document.getElementById('submitButton');
             const prefixButtons = document.querySelectorAll('.prefix-btn');
             const prefixInput = document.getElementById('prefix');
             const phoneNumberInput = document.getElementById('phoneNumber');
+            const licenseNumberInput = document.getElementById('licenseNumber');
             const requiredInputs = form.querySelectorAll('[required]');
 
-            // ---------- 1. LIFF Initialization and Login ----------
-            liff.init({ liffId: "YOUR_LIFF_ID_HERE" }) // <-- *** ใส่ LIFF ID ของคุณตรงนี้ ***
-                .then(() => {
-                    if (!liff.isLoggedIn()) {
-                        liff.login(); // บังคับ Login
-                    } else {
-                        liff.getProfile().then(profile => {
-                            document.getElementById('lineProfilePicture').src = profile.pictureUrl;
-                            document.getElementById('lineDisplayName').textContent = profile.displayName;
-                            document.getElementById('userId').value = profile.userId;
-                            document.getElementById('lineName').value = profile.displayName;
-                        }).catch(err => console.error(err));
-                    }
-                })
-                .catch(err => console.error(err));
-
-            // ---------- 2. Prefix Button Logic ----------
             prefixButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     prefixButtons.forEach(btn => btn.classList.remove('active'));
@@ -177,20 +170,30 @@
                 });
             });
 
-            // ---------- 4. Phone Number Validation ----------
-            phoneNumberInput.addEventListener('blur', () => { // ตรวจสอบเมื่อผู้ใช้ออกจากช่องนี้
-                const phone = phoneNumberInput.value;
-                if (phone.length > 0 && (phone.length !== 10 || phone.charAt(0) !== '0')) {
+            // ---------- FIX #3: SweetAlert for non-numeric License Number ----------
+            licenseNumberInput.addEventListener('input', () => {
+                const value = licenseNumberInput.value;
+                if (/[^0-9]/.test(value)) { // ตรวจสอบถ้ามีตัวอักษรที่ไม่ใช่ตัวเลข
                     Swal.fire({
                         icon: 'error',
-                        title: 'เบอร์โทรศัพท์ไม่ถูกต้อง',
-                        text: 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก และขึ้นต้นด้วยเลข 0 ค่ะ',
-                        confirmButtonColor: 'var(--primary-pink)'
+                        title: 'ข้อมูลไม่ถูกต้อง',
+                        text: 'กรุณากรอกเฉพาะตัวเลขเท่านั้นค่ะ',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000
                     });
+                    licenseNumberInput.value = value.replace(/[^0-9]/g, ''); // ลบตัวอักษรที่ไม่ใช่ตัวเลขออก
                 }
             });
 
-            // ---------- 5 & 6. Form Validation & Submit Button State ----------
+            phoneNumberInput.addEventListener('blur', () => {
+                const phone = phoneNumberInput.value;
+                if (phone.length > 0 && (phone.length !== 10 || phone.charAt(0) !== '0')) {
+                    Swal.fire({ icon: 'error', title: 'เบอร์โทรศัพท์ไม่ถูกต้อง', text: 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก และขึ้นต้นด้วยเลข 0 ค่ะ', confirmButtonColor: 'var(--primary-pink)'});
+                }
+            });
+            
             function validateForm() {
                 let isValid = true;
                 requiredInputs.forEach(input => {
@@ -198,12 +201,10 @@
                         isValid = false;
                     }
                 });
-                
                 const phone = phoneNumberInput.value;
                 if (phone.length !== 10 || phone.charAt(0) !== '0') {
                     isValid = false;
                 }
-                
                 return isValid;
             }
 
@@ -215,43 +216,30 @@
                 }
             });
 
-            // ---------- 7. Form Submission with SweetAlert ----------
             form.addEventListener('submit', function(event) {
-                event.preventDefault(); // หยุดการส่งฟอร์มปกติ
+                event.preventDefault();
                 if (!validateForm()) {
-                    Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบถ้วนค่ะ', confirmButtonColor: 'var(--primary-pink)'});
+                    Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบถ้วนและถูกต้องค่ะ', confirmButtonColor: 'var(--primary-pink)'});
                     return;
                 }
-
                 document.getElementById('timestamp').value = new Date().toISOString();
-                
                 Swal.fire({
-                    title: 'ยืนยันการส่งข้อมูล?',
-                    text: "กรุณาตรวจสอบข้อมูลก่อนกดยืนยัน",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: 'var(--primary-pink)',
-                    cancelButtonColor: '#888',
-                    confirmButtonText: 'ยืนยัน',
-                    cancelButtonText: 'ยกเลิก'
+                    title: 'ยืนยันการส่งข้อมูล?', text: "กรุณาตรวจสอบข้อมูลก่อนกดยืนยัน", icon: 'question',
+                    showCancelButton: true, confirmButtonColor: 'var(--primary-pink)', cancelButtonColor: '#888',
+                    confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // ส่งข้อมูลฟอร์ม
-                        // Developer จะต้องเขียนโค้ดส่งข้อมูลไปยัง Google Sheet ตรงนี้
-                        // form.submit(); <-- หากต้องการให้ฟอร์มทำงานตาม action ที่ตั้งไว้
-                        
-                        Swal.fire({
-                           title: 'ลงทะเบียนสำเร็จ!',
-                           text: 'ขอบคุณที่ให้ข้อมูลค่ะ',
-                           icon: 'success',
-                           confirmButtonColor: 'var(--primary-pink)'
-                        }).then(() => {
-                            liff.closeWindow(); // ปิดหน้าต่าง LIFF
+                        Swal.fire({ title: 'ลงทะเบียนสำเร็จ!', text: 'ขอบคุณที่ให้ข้อมูลค่ะ', icon: 'success', confirmButtonColor: 'var(--primary-pink)'})
+                        .then(() => {
+                           // Developer นำโค้ดส่งข้อมูลไป Google Sheet มาใส่ตรงนี้ แล้วค่อยปิดหน้าต่าง
+                           // form.submit();
+                           // liff.closeWindow(); 
                         });
                     }
                 });
             });
-        });
+        }
+        main(); // เรียกใช้ฟังก์ชันหลัก
     </script>
 </body>
 </html>
