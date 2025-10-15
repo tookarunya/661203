@@ -21,15 +21,16 @@
         body { font-family: 'line_seed_sans_th', sans-serif; }
         .form-input:required:invalid+.invalid-feedback { display: block; }
         
-        /* Custom styles for radio button group */
-        .radio-group input[type="radio"] { display: none; }
-        .radio-group label {
-            border: 1px solid #D1D5DB; padding: 0.75rem 1rem; cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
-            width: 100%; text-align: center;
+        /* Custom styles for the new radio buttons */
+        .form-radio {
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+            border-radius: 50%; width: 1.25em; height: 1.25em;
+            border: 2px solid #D1D5DB;
+            transition: 0.2s all linear;
+            margin-right: 0.5em; position: relative; top: 4px;
         }
-        .radio-group input[type="radio"]:checked+label {
-            background-color: #EC008C; color: white; border-color: #EC008C;
+        .form-radio:checked {
+            border: 6px solid #EC008C;
         }
     </style>
     
@@ -57,15 +58,21 @@
             <form id="loginForm" name="google-sheet" autocomplete="off" novalidate>
                 <input type="hidden" id="timestamp" name="Timestamp">
                 <input type="hidden" id="uid" name="Uid">
-                <input type="hidden" id="upic" name="Upic">
+                <input type="hidden" id="uname" name="UName"> <input type="hidden" id="number2" name="number2" value=""> <input type="hidden" id="upic" name="Upic">
                 <input type="hidden" id="approve" name="Approve" value="">
 
-                <div class="space-y-4">
+                <div class="space-y-5">
                     <div>
                         <label class="block text-sm font-medium text-cu-gray-text mb-2">คำนำหน้า <span class="text-red-500">*</span></label>
-                        <div class="radio-group flex rounded-md overflow-hidden">
-                            <input type="radio" id="prefix1" name="Prefix" value="ภก." required><label for="prefix1" class="rounded-l-md">ภก.</label>
-                            <input type="radio" id="prefix2" name="Prefix" value="ภญ."><label for="prefix2" class="rounded-r-md">ภญ.</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" class="form-radio" name="Prefix" value="ภก." required checked>
+                                <span class="ml-2 text-cu-gray-text">เภสัชกร (ภก.)</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" class="form-radio" name="Prefix" value="ภญ.">
+                                <span class="ml-2 text-cu-gray-text">เภสัชกรหญิง (ภญ.)</span>
+                            </label>
                         </div>
                     </div>
                     
@@ -100,7 +107,7 @@
                 </div>
                 
                 <div class="mt-6">
-                    <label id="visto-label" for="visto" class="flex items-center p-3 rounded-md transition-colors">
+                    <label id="visto-label" for="visto" class="flex items-center p-3 rounded-md transition-colors cursor-pointer">
                         <input type="checkbox" id="visto" name="visto" class="h-4 w-4 rounded border-gray-300 text-cu-pink focus:ring-cu-pink" required>
                         <span class="ml-3 text-sm text-cu-gray-text">ยืนยันข้อมูลถูกต้อง</span>
                     </label>
@@ -142,12 +149,13 @@
         async function getProfileAndShowForm() {
             try {
                 const profile = await liff.getProfile();
+                // Fixed: Populate the hidden UName field
+                document.getElementById("uname").value = profile.displayName; 
                 document.getElementById("uid").value = profile.userId;
                 document.getElementById("upic").value = profile.pictureUrl;
                 document.getElementById("picURL").src = profile.pictureUrl;
                 document.getElementById("displayName").innerText = profile.displayName;
 
-                // Show the main form and hide loading screen
                 document.getElementById('main-content').style.display = 'block';
                 document.getElementById('loading-screen').style.display = 'none';
             } catch (err) {
@@ -163,7 +171,6 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
 
-            // Show immediate feedback with SweetAlert
             Swal.fire({
                 title: 'สำเร็จ!',
                 text: 'เราได้รับข้อมูลของคุณเรียบร้อยแล้วค่ะ',
@@ -172,14 +179,9 @@
                 confirmButtonColor: '#EC008C'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Start background tasks after user clicks OK
                     document.getElementById('submit').disabled = true;
                     document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
-
-                    // Prepare and send data to Google Sheet
                     sendDataToSheet();
-                    
-                    // Send LIFF message and close window
                     sendLiffMessage();
                 }
             });
@@ -215,7 +217,7 @@
         
         // 3. UI LOGIC (Checkbox and Button)
         document.addEventListener('DOMContentLoaded', function() {
-            initializeLiff(); // Start LIFF process on page load
+            initializeLiff(); 
 
             const checkbox = document.getElementById('visto');
             const submitButton = document.getElementById('submit');
@@ -230,7 +232,7 @@
                 }
             }
             checkbox.addEventListener('change', updateUIState);
-            updateUIState(); // Initial check
+            updateUIState();
         });
     </script>
 </body>
