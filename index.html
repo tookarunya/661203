@@ -221,20 +221,39 @@
         });
     }
 
-    // ====================================================================
-    // 3. CHECKBOX & SUBMIT BUTTON LOGIC
+
+// ====================================================================
+    // 3. CHECKBOX & SUBMIT BUTTON LOGIC (IMPROVED)
     // ส่วนนี้ใช้เปิด/ปิดปุ่ม "ลงทะเบียน" ตามการติ๊ก checkbox
     // ====================================================================
     $(document).ready(function() {
-        $('#submit').prop('disabled', true);
-        $('#visto').click(function() {
-            if ($(this).is(':checked')) {
+        console.log("jQuery is ready. Setting up button logic.");
+
+        // ฟังก์ชันสำหรับอัปเดตสถานะของปุ่ม
+        function updateButtonState() {
+            var isChecked = $('#visto').is(':checked');
+            console.log("Checkbox is checked:", isChecked);
+            
+            if (isChecked) {
                 $('#submit').prop('disabled', false);
+                console.log("Button ENABLED.");
             } else {
                 $('#submit').prop('disabled', true);
+                console.log("Button DISABLED.");
             }
+        }
+
+        // เมื่อสถานะของ checkbox เปลี่ยน, ให้เรียกใช้ฟังก์ชันอัปเดตปุ่ม
+        $('#visto').on('change', function() {
+            console.log("Checkbox state changed!");
+            updateButtonState();
         });
+
+        // เรียกใช้ฟังก์ชันหนึ่งครั้งตอนโหลดหน้าเว็บ เพื่อกำหนดสถานะเริ่มต้น
+        updateButtonState();
     });
+
+    
 </script>
 
 
