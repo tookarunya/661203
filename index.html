@@ -20,22 +20,14 @@
     <style type="text/css">
         body { font-family: 'line_seed_sans_th', sans-serif; }
         
-        /* Custom styles for the new prefix button group */
         .prefix-group input[type="radio"] { display: none; }
         .prefix-group label {
-            border: 2px solid #E5E7EB;
-            padding: 0.75rem 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            width: 100%;
-            text-align: center;
-            font-weight: 600;
-            border-radius: 0.5rem;
+            border: 2px solid #E5E7EB; padding: 0.75rem 1rem; cursor: pointer;
+            transition: all 0.2s ease-in-out; width: 100%; text-align: center;
+            font-weight: 600; border-radius: 0.5rem;
         }
         .prefix-group input[type="radio"]:checked+label {
-            background-color: #EC008C;
-            color: white;
-            border-color: #EC008C;
+            background-color: #EC008C; color: white; border-color: #EC008C;
         }
     </style>
     
@@ -45,10 +37,10 @@
                 extend: {
                     colors: { 
                         'cu-pink': '#EC008C', 
-                        'cu-gray-text': '#58595B', 
+                        'cu-gray-text': '#374151', 
                         'cu-gray-light': '#F3F4F6', 
                         'cu-bg-light': '#F9FAFB',
-                        'cu-pink-light': '#FEF2F9' // Added light pink for input background
+                        'cu-pink-light': '#FEF2F9'
                     }
                 }
             }
@@ -59,52 +51,50 @@
 <body class="bg-cu-bg-light flex flex-col items-center justify-center min-h-screen p-4">
 
     <div id="main-content" class="w-full max-w-md mx-auto" style="display: none;">
-        <div class="bg-white rounded-2xl shadow-lg p-8">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
             
-            <div id="profile-section" class="text-center mb-6">
-                <img id="picURL" class="w-24 h-24 rounded-full mx-auto border-4 border-cu-pink" alt="Line Profile Picture">
-                <p id="displayName" class="text-lg font-semibold text-cu-gray-text mt-3"></p>
+            <div id="profile-section">
+                <img id="picURL" class="w-full h-auto" alt="Line Profile Picture">
             </div>
             
-            <form id="loginForm" name="google-sheet" autocomplete="off" novalidate>
+            <form id="loginForm" name="google-sheet" class="p-6" autocomplete="off" novalidate>
                 <input type="hidden" id="timestamp" name="Timestamp">
                 <input type="hidden" id="uid" name="Uid">
                 <input type="hidden" id="uname" name="UName">
                 <input type="hidden" id="upic" name="Upic">
                 <input type="hidden" id="approve" name="Approve" value="">
-                <input type="hidden" id="number2" name="number2" value="">
-
-                <div class="space-y-5">
+                
+                <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-cu-gray-text mb-2">คำนำหน้า <span class="text-red-500">*</span></label>
+                        <label class="block text-base font-semibold text-cu-gray-text mb-2">คำนำหน้า <span class="text-red-500">*</span></label>
                         <div class="prefix-group flex space-x-3">
-                            <input type="radio" id="prefix1" name="Prefix" value="ภก." required><label for="prefix1">เภสัชกร (ภก.)</label>
-                            <input type="radio" id="prefix2" name="Prefix" value="ภญ."><label for="prefix2">เภสัชกรหญิง (ภญ.)</label>
+                            <input type="radio" id="prefix1" name="number2" value="ภก." required><label for="prefix1">เภสัชกร (ภก.)</label>
+                            <input type="radio" id="prefix2" name="number2" value="ภญ."><label for="prefix2">เภสัชกรหญิง (ภญ.)</label>
                         </div>
                     </div>
                     
                     <div>
-                        <label for="number1" class="block text-sm font-medium text-cu-gray-text">เลขใบประกอบวิชาชีพ <span class="text-red-500">*</span></label>
+                        <label for="number1" class="block text-base font-semibold text-cu-gray-text">เลขใบประกอบวิชาชีพ <span class="text-red-500">*</span></label>
                         <input type="tel" id="number1" name="number1" inputmode="numeric" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเฉพาะตัวเลข" required>
                     </div>
 
                     <div>
-                        <label for="number4" class="block text-sm font-medium text-cu-gray-text">ชื่อ <span class="text-red-500">*</span></label>
+                        <label for="number4" class="block text-base font-semibold text-cu-gray-text">ชื่อ <span class="text-red-500">*</span></label>
                         <input type="text" id="number4" name="number4" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเฉพาะชื่อ" required>
                     </div>
 
                     <div>
-                        <label for="number5" class="block text-sm font-medium text-cu-gray-text">นามสกุล <span class="text-red-500">*</span></label>
+                        <label for="number5" class="block text-base font-semibold text-cu-gray-text">นามสกุล <span class="text-red-500">*</span></label>
                         <input type="text" id="number5" name="number5" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกนามสกุล" required>
                     </div>
                     
                     <div>
-                        <label for="number3" class="block text-sm font-medium text-cu-gray-text">Email</label>
+                        <label for="number3" class="block text-base font-semibold text-cu-gray-text">Email</label>
                         <input type="email" id="number3" name="number3" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกอีเมล">
                     </div>
 
                     <div>
-                        <label for="tel" class="block text-sm font-medium text-cu-gray-text">เบอร์โทรศัพท์มือถือ <span class="text-red-500">*</span></label>
+                        <label for="tel" class="block text-base font-semibold text-cu-gray-text">เบอร์โทรศัพท์มือถือ <span class="text-red-500">*</span></label>
                         <input type="tel" id="tel" name="tel" inputmode="numeric" pattern="[0-9]{10}" maxlength="10" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md transition-colors" placeholder="กรอกเบอร์มือถือ 10 หลัก" required>
                     </div>
                 </div>
@@ -112,7 +102,7 @@
                 <div class="mt-6">
                     <label id="visto-label" for="visto" class="flex items-center p-3 rounded-md transition-colors cursor-pointer">
                         <input type="checkbox" id="visto" name="visto" class="h-4 w-4 rounded border-gray-300 text-cu-pink focus:ring-cu-pink" required>
-                        <span class="ml-3 text-sm text-cu-gray-text">ยืนยันข้อมูลถูกต้อง</span>
+                        <span class="ml-3 text-base text-cu-gray-text">ยืนยันข้อมูลถูกต้อง</span>
                     </label>
                 </div>
 
@@ -129,7 +119,7 @@
         <p id="loading-message" class="text-lg text-cu-gray-text">กำลังโหลดข้อมูล...</p>
     </div>
 
-    <script type="text/javascript">
+    <script type="text-javascript">
         // 1. LIFF INITIALIZATION & LOGIN LOGIC
         async function initializeLiff() {
             try {
@@ -155,7 +145,6 @@
                 document.getElementById("uname").value = profile.displayName;
                 document.getElementById("upic").value = profile.pictureUrl;
                 document.getElementById("picURL").src = profile.pictureUrl;
-                document.getElementById("displayName").innerText = profile.displayName;
 
                 document.getElementById('main-content').style.display = 'block';
                 document.getElementById('loading-screen').style.display = 'none';
@@ -200,14 +189,42 @@
         }
 
         function sendLiffMessage() {
-            liff.sendMessages([{
-                "type": "flex", "altText": "สถานะการลงทะเบียน",
-                "contents": { "type": "bubble", "body": { "type": "box", "layout": "vertical", "contents": [
-                    { "type": "text", "text": "ลงทะเบียนสำเร็จ", "weight": "bold", "color": "#1DB446", "size": "md" },
-                    { "type": "text", "text": "สถานะ: รอการตรวจสอบสิทธิ์", "size": "sm", "color": "#555555", "margin": "md" },
-                    { "type": "text", "text": "เจ้าหน้าที่จะดำเนินการตรวจสอบข้อมูลและแจ้งผลให้ท่านทราบอีกครั้ง", "wrap": true, "color": "#AAAAAA", "size": "xs", "margin": "md" }
-                ]}}
-            }]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
+            const profile = {
+                picUrl: document.getElementById("upic").value,
+                prefix: document.querySelector('input[name="number2"]:checked')?.value || '-',
+                license: document.getElementById("number1").value,
+                firstName: document.getElementById("number4").value,
+                lastName: document.getElementById("number5").value,
+                email: document.getElementById("number3").value,
+                tel: document.getElementById("tel").value,
+            };
+
+            liff.sendMessages([
+                {"type": "flex", "altText": "สรุปข้อมูลการลงทะเบียน", "contents": { "type": "bubble",
+                    "hero": {"type": "image", "url": profile.picUrl, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover"},
+                    "body": {"type": "box", "layout": "vertical", "spacing": "md", "contents": [
+                        {"type": "text", "text": "ข้อมูลที่คุณลงทะเบียน", "weight": "bold", "size": "xl", "color": "#EC008C"},
+                        {"type": "separator", "margin": "md"},
+                        {"type": "box", "layout": "vertical", "margin": "lg", "spacing": "sm", "contents": [
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "คำนำหน้า", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profile.prefix, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เลขใบประกอบฯ", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profile.license, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "ชื่อ-สกุล", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": `${profile.firstName} ${profile.lastName}`, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "Email", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profile.email || '-', "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]},
+                            {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เบอร์โทรศัพท์", "color": "#aaaaaa", "size": "sm", "flex": 3}, {"type": "text", "text": profile.tel, "wrap": true, "color": "#666666", "size": "sm", "flex": 5}]}
+                        ]},
+                        {"type": "separator", "margin": "xl"},
+                        {"type": "box", "layout": "vertical", "margin": "md", "contents": [
+                            { "type": "text", "text": "ลงทะเบียนสำเร็จ", "weight": "bold", "color": "#1DB446", "size": "md" },
+                            { "type": "text", "text": "สถานะ: รอการตรวจสอบสิทธิ์", "size": "sm", "color": "#555555", "margin": "sm" },
+                            { "type": "text", "text": "เจ้าหน้าที่จะดำเนินการตรวจสอบข้อมูลและแจ้งผลให้ท่านทราบอีกครั้ง", "wrap": true, "color": "#AAAAAA", "size": "xs", "margin": "sm" }
+                        ]}
+                    ]},
+                    "footer": {"type": "box", "layout": "vertical", "spacing": "sm", "contents": [
+                        {"type": "button", "style": "link", "height": "sm", "color": "#EC008C", "action": {"type": "uri", "label": "ติดต่อเจ้าหน้าที่ / แก้ไขข้อมูล", "uri": "https://line.me/R/ti/p/@YOUR_OA_ID"}},
+                        {"type": "spacer", "size": "sm"}
+                    ]}
+                }}
+            ]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
         }
         
         // 3. UI LOGIC
@@ -220,10 +237,7 @@
             const formInputs = document.querySelectorAll('.form-input');
 
             function updateUIState() {
-                // Enable/disable submit button
                 submitButton.disabled = !checkbox.checked;
-
-                // Change background colors
                 if (checkbox.checked) {
                     checkboxLabel.classList.add('bg-cu-gray-light');
                     formInputs.forEach(input => input.classList.add('bg-cu-pink-light'));
