@@ -1,215 +1,219 @@
-:root {
-    --primary-pink: #D9AAB7;
-    --dark-gray: #5C5455;
-    --light-gray: #DCDCDC;
-    --background-white: #FCFBFB;
-    --disabled-bg: #F5F5F5;
-}
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ลงทะเบียนนิสิตเก่า</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- นี่คือส่วนของ CSS ที่รวมเข้ามาในไฟล์นี้เลย --- */
+        :root {
+            --primary-pink: #D9AAB7;
+            --dark-gray: #5C5455;
+            --light-gray: #DCDCDC;
+            --background-white: #FCFBFB;
+            --disabled-bg: #F5F5F5;
+        }
 
-body {
-    font-family: 'Sarabun', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: var(--background-white);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align to top */
-    min-height: 100vh;
-    color: var(--dark-gray);
-    position: relative;
-    overflow-x: hidden;
-}
+        body {
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-white);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: var(--dark-gray);
+        }
 
-/* Background pattern */
-.background-pattern {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('https://i.imgur.com/your-sakura-pattern.png'); /* Replace with your actual sakura pattern image */
-    background-repeat: no-repeat;
-    background-position: top right, bottom left;
-    background-size: 200px; /* Adjust size as needed */
-    opacity: 0.3; /* Make it subtle */
-    z-index: -1;
-}
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-top: 40px;
+        }
 
+        .header-text {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-.container {
-    width: 100%;
-    max-width: 500px; /* Max width for content */
-    padding: 20px;
-    box-sizing: border-box;
-    margin-top: 40px; /* Space from top */
-}
+        .header-text h1 {
+            font-size: 1.5rem;
+            color: var(--dark-gray);
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
 
-/* Header Text */
-.header-text {
-    text-align: center;
-    margin-bottom: 30px;
-}
+        .header-text h2 {
+            font-size: 2.2rem;
+            color: var(--dark-gray);
+            margin-top: 0;
+            font-weight: 600;
+        }
 
-.header-text h1 {
-    font-size: 1.5rem; /* Adjust as needed */
-    color: var(--dark-gray);
-    margin-bottom: 5px;
-    font-weight: 400; /* Regular weight */
-}
+        .profile-card {
+            display: flex;
+            align-items: center;
+            background-color: #FFFFFF;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
 
-.header-text h2 {
-    font-size: 2.2rem; /* Larger for emphasis */
-    color: var(--dark-gray);
-    margin-top: 0;
-    font-weight: 600; /* Semi-bold */
-}
+        .profile-avatar img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
 
-/* Profile Card */
-.profile-card {
-    display: flex;
-    align-items: center;
-    background-color: #FFFFFF;
-    padding: 15px 20px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05); /* Soft shadow */
-    margin-bottom: 30px;
-}
+        .profile-info p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
 
-.profile-avatar img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin-right: 15px;
-    object-fit: cover;
-}
+        .registration-form {
+            background-color: #FFFFFF;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03);
+        }
 
-.profile-info p {
-    margin: 0;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: var(--dark-gray);
-}
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-/* Registration Form */
-.registration-form {
-    background-color: #FFFFFF;
-    padding: 25px 30px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03); /* Lighter shadow for form */
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
 
-.form-group {
-    margin-bottom: 20px;
-}
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--dark-gray);
+            box-sizing: border-box;
+        }
 
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--dark-gray);
-}
+        .form-group input[type="text"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+        }
 
-.form-group input[type="text"],
-.form-group select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--light-gray);
-    border-radius: 8px;
-    font-size: 1rem;
-    color: var(--dark-gray);
-    box-sizing: border-box; /* Include padding in width */
-    transition: all 0.2s ease-in-out; /* Smooth transition */
-}
+        .form-group input:disabled,
+        .form-group select:disabled {
+            background-color: var(--disabled-bg);
+            cursor: not-allowed;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 25px;
+            margin-bottom: 30px;
+        }
 
-.form-group input[type="text"]::placeholder {
-    color: #B0B0B0;
-}
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
 
-/* Input Focus State */
-.form-group input[type="text"]:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: var(--primary-pink); /* Highlight border on focus */
-    box-shadow: 0 0 0 3px rgba(var(--primary-pink), 0.2); /* Soft focus ring */
-}
+        .checkbox-group label {
+            font-size: 1rem;
+            cursor: pointer;
+        }
 
-/* Disabled state for inputs */
-.form-group input[type="text"]:disabled,
-.form-group select:disabled {
-    background-color: var(--disabled-bg);
-    border-color: #E0E0E0;
-    cursor: not-allowed;
-    color: #888888;
-}
+        .submit-button {
+            width: 100%;
+            padding: 15px 20px;
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-/* Checkbox group */
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
-    margin-bottom: 30px;
-}
+        .submit-button:hover {
+            background-color: #C69EA8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header-text">
+            <h1>คณะเภสัชศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h1>
+            <h2>ลงทะเบียนนิสิตเก่า</h2>
+        </header>
 
-.checkbox-group input[type="checkbox"] {
-    appearance: none; /* Hide default checkbox */
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--primary-pink);
-    border-radius: 4px;
-    margin-right: 10px;
-    cursor: pointer;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        <div class="profile-card">
+            <div class="profile-avatar">
+                <img src="https://via.placeholder.com/60x60/f0e0e0/806060?text=👤" alt="Profile Avatar">
+            </div>
+            <div class="profile-info">
+                <p><strong>ชื่อโปรไฟล์ LINE:</strong> Patarda S.</p>
+                <p><strong>สถานะ:</strong> นิสิตเก่า</p>
+            </div>
+        </div>
 
-.checkbox-group input[type="checkbox"]:checked {
-    background-color: var(--primary-pink);
-    border-color: var(--primary-pink);
-}
+        <form id="registrationForm" class="registration-form">
+            <div class="form-group">
+                <label for="prefix">คำนำหน้า:</label>
+                <select id="prefix" name="prefix">
+                    <option value="ภก.">ภก.</option>
+                    <option value="ภญ.">ภญ.</option>
+                </select>
+            </div>
 
-.checkbox-group input[type="checkbox"]:checked::after {
-    content: '✔'; /* Checkmark symbol */
-    color: white;
-    font-size: 14px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
+            <div class="form-group">
+                <label for="firstName">ชื่อ:</label>
+                <input type="text" id="firstName" name="firstName" placeholder="กรอกชื่อ">
+            </div>
 
-.checkbox-group label {
-    font-size: 1rem;
-    color: var(--dark-gray);
-    cursor: pointer;
-}
+            <div class="form-group">
+                <label for="lastName">นามสกุล:</label>
+                <input type="text" id="lastName" name="lastName" placeholder="กรอกนามสกุล">
+            </div>
 
-/* Submit Button */
-.submit-button {
-    width: 100%;
-    padding: 15px 20px;
-    background-color: var(--primary-pink);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0px 4px 10px rgba(var(--primary-pink), 0.3); /* Soft shadow for button */
-}
+            <div class="checkbox-group">
+                <input type="checkbox" id="confirmData" name="confirmData">
+                <label for="confirmData">ยืนยันข้อมูลถูกต้อง</label>
+            </div>
 
-.submit-button:hover {
-    background-color: #C69EA8; /* Slightly darker pink on hover */
-    transform: translateY(-2px); /* Slight lift effect */
-}
+            <button type="submit" class="submit-button">ยืนยันการลงทะเบียน</button>
+        </form>
+    </div>
 
-.submit-button:disabled {
-    background-color: #E0E0E0;
-    color: #A0A0A0;
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-}
+    <script>
+        document.getElementById('confirmData').addEventListener('change', function() {
+            const form = document.getElementById('registrationForm');
+            const elements = form.querySelectorAll('input, select');
+            
+            elements.forEach(el => {
+                if (el.id !== 'confirmData') {
+                    el.disabled = this.checked;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
