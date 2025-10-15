@@ -11,7 +11,6 @@
     
     <style>
         :root {
-            /* FIX #2: ปรับกลับมาใช้สีชมพูที่สบายตา */
             --primary-pink: #D18DA1; 
             --light-pink-hover: #FDEEF4;
             --dark-gray: #5C5455;
@@ -76,7 +75,7 @@
 <body>
     <div class="container">
         <header class="header-text">
-            <h1>คณะเภสัชศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h1>
+            <h1>คณะเภสัชศาสตร์</p>จุฬาลงกรณ์มหาวิทยาลัย</h1>
             <h2>ลงทะเบียนนิสิตเก่า</h2>
         </header>
 
@@ -100,7 +99,7 @@
                     <button type="button" class="prefix-btn active" data-value="ภก.">ภก.</button>
                     <button type="button" class="prefix-btn" data-value="ภญ.">ภญ.</button>
                 </div>
-                <input type="hidden" id="prefix" name="prefix" value="ภก.">
+                <input type="hidden" id="prefix" name="prefix" value="ภก." required>
             </div>
             <div class="form-group">
                 <label for="firstName">ชื่อ:<span class="required-star">*</span></label>
@@ -136,12 +135,12 @@
     <script>
         async function main() {
             // ---------- FIX #1: LIFF Initialization and Login ----------
-            // ต้องนำ URL ไปเปิดใน LINE เท่านั้น ถึงจะทำงานส่วนนี้ได้ถูกต้อง
+            // ต้องใส่ LIFF ID ที่ถูกต้อง และนำ URL ไปเปิดใน LINE เท่านั้น ถึงจะทำงานส่วนนี้ได้
             try {
-                await liff.init({ liffId: "YOUR_LIFF_ID_HERE" }); // <-- *** ใส่ LIFF ID ของคุณตรงนี้ ***
+                await liff.init({ liffId: "2007356106-xpYMlK8v" }); // <-- *** ใส่ LIFF ID ที่ถูกต้องตรงนี้ ***
                 if (!liff.isLoggedIn()) {
                     liff.login();
-                    return; // หยุดการทำงาน script ทันที รอหน้า reload หลัง login
+                    return;
                 }
                 const profile = await liff.getProfile();
                 document.getElementById('lineProfilePicture').src = profile.pictureUrl;
@@ -149,9 +148,8 @@
                 document.getElementById('userId').value = profile.userId;
                 document.getElementById('lineName').value = profile.displayName;
             } catch (err) {
-                console.error(err);
-                // อาจจะแสดงข้อความว่า "กรุณาเปิดใน LINE" ด้วย SweetAlert ก็ได้
-                Swal.fire('เกิดข้อผิดพลาด', 'กรุณาเปิดหน้านี้ผ่านแอปพลิเคชัน LINE ค่ะ', 'error');
+                console.error("LIFF Initialization Error: ", err);
+                Swal.fire('เกิดข้อผิดพลาด', 'กรุณาเปิดหน้านี้ผ่านแอปพลิเคชัน LINE และตรวจสอบการตั้งค่า LIFF ID ค่ะ', 'error');
             }
             
             const form = document.getElementById('registrationForm');
@@ -160,7 +158,7 @@
             const prefixInput = document.getElementById('prefix');
             const phoneNumberInput = document.getElementById('phoneNumber');
             const licenseNumberInput = document.getElementById('licenseNumber');
-            const requiredInputs = form.querySelectorAll('[required]');
+            const requiredInputs = Array.from(form.querySelectorAll('[required]'));
 
             prefixButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -170,20 +168,17 @@
                 });
             });
 
-            // ---------- FIX #3: SweetAlert for non-numeric License Number ----------
+            // ---------- FIX #2: SweetAlert for non-numeric License Number ----------
             licenseNumberInput.addEventListener('input', () => {
                 const value = licenseNumberInput.value;
-                if (/[^0-9]/.test(value)) { // ตรวจสอบถ้ามีตัวอักษรที่ไม่ใช่ตัวเลข
+                if (/[^0-9]/.test(value)) {
                     Swal.fire({
                         icon: 'error',
                         title: 'ข้อมูลไม่ถูกต้อง',
                         text: 'กรุณากรอกเฉพาะตัวเลขเท่านั้นค่ะ',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 2000
+                        confirmButtonColor: 'var(--primary-pink)'
                     });
-                    licenseNumberInput.value = value.replace(/[^0-9]/g, ''); // ลบตัวอักษรที่ไม่ใช่ตัวเลขออก
+                    licenseNumberInput.value = value.replace(/[^0-9]/g, '');
                 }
             });
 
@@ -195,19 +190,19 @@
             });
             
             function validateForm() {
-                let isValid = true;
-                requiredInputs.forEach(input => {
-                    if ((input.type === 'checkbox' && !input.checked) || (input.type !== 'checkbox' && !input.value)) {
-                        isValid = false;
-                    }
+                let isAllValid = requiredInputs.every(input => {
+                    if (input.type === 'checkbox') return input.checked;
+                    return input.value.trim() !== '';
                 });
+                
                 const phone = phoneNumberInput.value;
                 if (phone.length !== 10 || phone.charAt(0) !== '0') {
-                    isValid = false;
+                    isAllValid = false;
                 }
-                return isValid;
+                return isAllValid;
             }
 
+            // FIX #3: Logic to enable/disable button
             form.addEventListener('input', () => {
                 if (validateForm()) {
                     submitButton.disabled = false;
@@ -239,7 +234,7 @@
                 });
             });
         }
-        main(); // เรียกใช้ฟังก์ชันหลัก
+        main();
     </script>
 </body>
 </html>
