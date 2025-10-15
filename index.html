@@ -12,7 +12,6 @@
     <style>
         :root {
             --primary-pink: #D18DA1; 
-            --light-pink-hover: #FDEEF4;
             --dark-gray: #5C5455;
             --light-gray: #DCDCDC;
             --disabled-gray: #CCCCCC;
@@ -42,7 +41,7 @@
         .form-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; }
         .required-star { color: red; font-size: 1.1rem; margin-left: 2px;}
 
-        .form-group input, .form-group select {
+        .form-group input {
             width: 100%; padding: 12px 15px; border: 1px solid var(--light-gray); border-radius: 8px;
             font-size: 1rem; color: var(--dark-gray); box-sizing: border-box; transition: all 0.2s ease-in-out;
         }
@@ -75,7 +74,7 @@
 <body>
     <div class="container">
         <header class="header-text">
-            <h1>คณะเภสัชศาสตร์</p>จุฬาลงกรณ์มหาวิทยาลัย</h1>
+            <h1>คณะเภสัชศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h1>
             <h2>ลงทะเบียนนิสิตเก่า</h2>
         </header>
 
@@ -99,7 +98,7 @@
                     <button type="button" class="prefix-btn active" data-value="ภก.">ภก.</button>
                     <button type="button" class="prefix-btn" data-value="ภญ.">ภญ.</button>
                 </div>
-                <input type="hidden" id="prefix" name="prefix" value="ภก." required>
+                <input type="hidden" id="prefix" name="prefix" value="ภก.">
             </div>
             <div class="form-group">
                 <label for="firstName">ชื่อ:<span class="required-star">*</span></label>
@@ -134,22 +133,29 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
         async function main() {
-            // ---------- FIX #1: LIFF Initialization and Login ----------
-            // ต้องใส่ LIFF ID ที่ถูกต้อง และนำ URL ไปเปิดใน LINE เท่านั้น ถึงจะทำงานส่วนนี้ได้
+            // FIX #4: LIFF Initialization and Login
             try {
-                await liff.init({ liffId: "2007356106-xpYMlK8v" }); // <-- *** ใส่ LIFF ID ที่ถูกต้องตรงนี้ ***
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                    return;
-                }
+                await liff.init({ liffId: "2007356106-xpYMlK8v" }); 
+            } catch (err) {
+                console.error("LIFF Initialization Error: ", err);
+                Swal.fire('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'กรุณาตรวจสอบการตั้งค่า LIFF ID และลองอีกครั้ง', 'error');
+                return;
+            }
+
+            if (!liff.isLoggedIn()) {
+                liff.login({ redirectUri: window.location.href });
+                return;
+            }
+            
+            try {
                 const profile = await liff.getProfile();
                 document.getElementById('lineProfilePicture').src = profile.pictureUrl;
                 document.getElementById('lineDisplayName').textContent = profile.displayName;
                 document.getElementById('userId').value = profile.userId;
                 document.getElementById('lineName').value = profile.displayName;
-            } catch (err) {
-                console.error("LIFF Initialization Error: ", err);
-                Swal.fire('เกิดข้อผิดพลาด', 'กรุณาเปิดหน้านี้ผ่านแอปพลิเคชัน LINE และตรวจสอบการตั้งค่า LIFF ID ค่ะ', 'error');
+            } catch(err) {
+                 console.error("Get Profile Error: ", err);
+                 Swal.fire('ไม่สามารถดึงข้อมูลโปรไฟล์', 'กรุณาอนุญาตให้แอปเข้าถึงข้อมูลโปรไฟล์ของคุณใน LINE', 'warning');
             }
             
             const form = document.getElementById('registrationForm');
@@ -158,8 +164,9 @@
             const prefixInput = document.getElementById('prefix');
             const phoneNumberInput = document.getElementById('phoneNumber');
             const licenseNumberInput = document.getElementById('licenseNumber');
+            const confirmCheckbox = document.getElementById('confirmData');
             const requiredInputs = Array.from(form.querySelectorAll('[required]'));
-
+            
             prefixButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     prefixButtons.forEach(btn => btn.classList.remove('active'));
@@ -168,7 +175,7 @@
                 });
             });
 
-            // ---------- FIX #2: SweetAlert for non-numeric License Number ----------
+            // FIX #1: SweetAlert for non-numeric License Number
             licenseNumberInput.addEventListener('input', () => {
                 const value = licenseNumberInput.value;
                 if (/[^0-9]/.test(value)) {
@@ -189,20 +196,19 @@
                 }
             });
             
+            // FIX #2: Form Validation & Submit Button State
             function validateForm() {
-                let isAllValid = requiredInputs.every(input => {
+                const allRequiredFilled = requiredInputs.every(input => {
                     if (input.type === 'checkbox') return input.checked;
                     return input.value.trim() !== '';
                 });
                 
                 const phone = phoneNumberInput.value;
-                if (phone.length !== 10 || phone.charAt(0) !== '0') {
-                    isAllValid = false;
-                }
-                return isAllValid;
+                const isPhoneValid = phone.length === 10 && phone.charAt(0) === '0';
+                
+                return allRequiredFilled && isPhoneValid;
             }
 
-            // FIX #3: Logic to enable/disable button
             form.addEventListener('input', () => {
                 if (validateForm()) {
                     submitButton.disabled = false;
@@ -211,12 +217,16 @@
                 }
             });
 
+            // FIX #3: Lock form fields when checkbox is ticked
+            confirmCheckbox.addEventListener('change', function() {
+                const elementsToToggle = form.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"], .prefix-btn');
+                elementsToToggle.forEach(el => {
+                    el.disabled = this.checked;
+                });
+            });
+
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
-                if (!validateForm()) {
-                    Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบถ้วน', text: 'กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบถ้วนและถูกต้องค่ะ', confirmButtonColor: 'var(--primary-pink)'});
-                    return;
-                }
                 document.getElementById('timestamp').value = new Date().toISOString();
                 Swal.fire({
                     title: 'ยืนยันการส่งข้อมูล?', text: "กรุณาตรวจสอบข้อมูลก่อนกดยืนยัน", icon: 'question',
@@ -224,12 +234,10 @@
                     confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        // In a real scenario, you would now submit the form data.
+                        // For example: form.submit();
                         Swal.fire({ title: 'ลงทะเบียนสำเร็จ!', text: 'ขอบคุณที่ให้ข้อมูลค่ะ', icon: 'success', confirmButtonColor: 'var(--primary-pink)'})
-                        .then(() => {
-                           // Developer นำโค้ดส่งข้อมูลไป Google Sheet มาใส่ตรงนี้ แล้วค่อยปิดหน้าต่าง
-                           // form.submit();
-                           // liff.closeWindow(); 
-                        });
+                        .then(() => { if (liff) liff.closeWindow(); });
                     }
                 });
             });
