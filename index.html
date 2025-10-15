@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Bai Jamjuree' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
+    <title>ลงทะเบียนนิสิตเก่า</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous"></script>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* === FINAL STABLE CSS (Based on our design) === */
+        :root {
+            --primary-pink: #D18DA1; 
+            --dark-gray: #5C5455;
+            --light-gray: #DCDCDC;
+            --disabled-gray: #CCCCCC;
+            --background-white: #FCFBFB;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Mitr', sans-serif; 
+            background: #FCFBFB; /* ใช้สีขาวนวลแทนภาพพื้นหลัง */
+            color: var(--dark-gray);
+            min-height: 100vh; 
+            /* ลบ styling ที่ขัดแย้งกับโค้ดเดิมออก */
+        }
+
+        .container { max-width: 500px; padding: 20px; margin-top: 40px; margin-bottom: 40px;}
+        
+        /* New Profile Card (เพื่อความสวยงาม) */
+        .profile-card {
+            display: flex; align-items: center; background-color: #FFFFFF; padding: 15px 20px;
+            border-radius: 12px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05); margin-bottom: 30px;
+        }
+        .profile-card img { border-radius: 50%; margin-right: 15px; }
+
+        .card-form {
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05); /* ใช้ shadow ที่เราออกแบบ */
+            border: none; /* ลบ border เดิมออก */
+            border-radius: 12px; 
+            background: #fff;
+            padding: 25px 30px; 
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        .card-form input, .card-form select {
+             font-size: 1rem;
+             padding: 10px 15px;
+             border: 1px solid var(--light-gray);
+             border-radius: 8px;
+        }
+        .card-form input:focus { outline: none; border-color: var(--primary-pink); box-shadow: 0 0 5px rgba(209, 141, 161, 0.5); }
+        
+        /* Prefix Button Styling (นำมาใช้กับ Radio Button) */
+        .prefix-group { display: flex; gap: 10px; }
+        .prefix-group input[type="radio"] { display: none; } /* ซ่อนปุ่มเดิม */
+
+        .prefix-group label {
+            flex: 1; padding: 12px; border: 1px solid var(--light-gray); border-radius: 8px;
+            background-color: #FFFFFF; color: var(--dark-gray); font-size: 1rem;
+            text-align: center; cursor: pointer; transition: all 0.2s ease-in-out;
+            margin-bottom: 0 !important;
+        }
+        .prefix-group label:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        
+        .prefix-group input[type="radio"]:checked + label { 
+            background-color: var(--primary-pink); color: white; border-color: var(--primary-pink); 
+        }
+
+        /* Submit Button Styling */
+        #submit {
+            background-color: var(--primary-pink) !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-weight: bold !important;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            padding: 10px 15px;
+        }
+        #submit:hover { background-color: #C17C8E !important; }
+        #submit:disabled { background-color: var(--disabled-gray) !important; cursor: not-allowed !important; }
+
+        /* Footer Styling */
+        .footer-content {
+            margin-top: 1.5rem; text-align: center; font-size: 0.875rem; color: #6B7280;
+        }
+        .footer-content a {
+            font-weight: 600; color: var(--primary-pink);
+        }
+        .footer-content a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="mt-4 text-center">
+        <div clas="justify-content-center align-items-center">
+            <div class="mt-4 text-center text-light" id="msgStatus"></div>
+        </div>
+    </div>
+    <div id="loginPage" style="display:block;">
+        <div id="login-form" class="container-sm fade-in-page mt-4 card-form">
+            <div class="container py-4">
+                
+                <div class="profile-card mb-4">
+                    <div class="profile-avatar">
+                        <img id="picURL" class="avatar" alt="Profile Picture" width="50" height="50">
+                    </div>
+                    <div class="profile-info">
+                        <p><strong>ชื่อ Line:</strong> <span id="uname_display"></span></p>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <form id="loginForm" class="was-validated" autocomplete="off" name="google-sheet" onsubmit="return validateForm()">
+                        <div class="form-row">
+                            <div class="form-group col-md-12 center">
+                                <div class="form-row">
+                                    
+                                    <input id="uid" class="form-control" name="Uid" style="display:none;">
+                                    <input id="upic" name="Upic" style="display:none;">
+
+                                    <div class="form-group col-md-12">
+                                        <label class="block text-base font-semibold text-cu-gray-text mb-2">คำนำหน้า <span class="text-red-500">*</span></label>
+                                        <div class="prefix-group">
+                                            <input type="radio" id="prefix1" name="Prefix" value="ภก." required><label for="prefix1">เภสัชกร (ภก.)</label>
+                                            <input type="radio" id="prefix2" name="Prefix" value="ภญ."><label for="prefix2">เภสัชกรหญิง (ภญ.)</label>
+                                        </div>
+                                        <input type="hidden" id="number2_hidden" name="number2">
+                                    </div>
+
+                                    <div class="form-group col-md-12">
+                                        <label for="number1">เลขใบประกอบวิชาชีพ</label>
+                                        <input type="tel" class="form-control" placeholder="กรอกเฉพาะ..ตัวเลข" id="number1" name="number1" required>
+                                        <div class="invalid-feedback">กรอกเฉพาะ..ตัวเลข</div>
+                                    </div>
+                                    
+                                    <div class="form-group col-md-12">
+                                        <label for="number3">email</label>
+                                        <input type="email" class="form-control" placeholder="กรอก..อีเมล" id="number3" name="number3" required>
+                                        <div class="invalid-feedback">กรอก..อีเมล</div>
+                                    </div>
+                                    
+                                    <div class="form-group col-md-12">
+                                        <label for="number4">ชื่อ</label>
+                                        <input type="text" class="form-control" placeholder="กรอก..เฉพาะชื่อ" id="number4" name="number4" required>
+                                        <div class="invalid-feedback">กรอก..เฉพาะชื่อ</div>
+                                    </div>
+
+                                    <div class="form-group col-md-12">
+                                        <label for="number5">นามสกุล</label>
+                                        <input type="text" class="form-control" placeholder="กรอก..นามสกุ" id="number5" name="number5" required>
+                                        <div class="invalid-feedback">กรอก..นามสกุล</div>
+                                    </div>
+
+                                    <div class="form-group col-md-12">
+                                        <label for="tel">Mobile Phone</label>
+                                        <input type="tel" class="form-control" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="กรอก..โทร.มือถือ" id="tel" name="tel" maxlength="10" minlength="10" required>
+                                        <div class="invalid-feedback">กรอกเบอร์มือถือ 10 หลัก</div>
+                                    </div>
+                                    
+                                    <div class="row"> </div>
+                                    <div class="col"> </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input type="checkbox" class="form-check-input" name='visto' id='visto' value='' required>
+                                        <label class="form-check-label" for="validationFormCheck1">ยอมรับเงื่อนไขตามตกลง</label>
+                                        <div class="invalid-feedback">หากไม่ยอมรับเงื่อนนไขจะไม่สามารถลงทะเบียนได้</div>
+                                    </div>
+
+                                    <button type="submit" name="submit" id="submit" class="btn btn-primary btn-block text-white" disabled><i class="fas fa-paper-plane"></i>ลงทะเบียน</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-content">
+        <p>พบปัญหาหรือต้องการแก้ไขข้อมูล? <a href="https://line.me/ti/p/YOUR_OA_ID">ติดต่อเจ้าหน้าที่</a></p>
+        <p>ติดต่อฝ่ายไอที: <a href="tel:022188288">02-218-8288</a></p>
+    </div>
+
+    <script>
+        // === JAVASCRIPT LOGIC (Original Stable Logic) ===
+        // Note: The logic here is based on the original functioning code.
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const prefixRadios = form.querySelectorAll('input[name="Prefix"]');
+            const prefixHidden = document.getElementById('number2_hidden');
+            const upicInput = document.getElementById('upic');
+            const unameDisplay = document.getElementById('uname_display');
+            const picURLImg = document.getElementById('picURL');
+            
+            // --- LIFF Initialization and Profile Fetching ---
+            liff.init({ liffId: "2007356106-N3LGkD4Z" })
+                .then(() => {
+                    if (!liff.isLoggedIn()) {
+                        liff.login();
+                        return;
+                    }
+                    liff.getProfile()
+                        .then(profile => {
+                            const pictureUrl = profile.pictureUrl || 'https://via.placeholder.com/60x60/f0e0e0/806060?text=👤';
+                            
+                            // Update Display and Hidden Fields
+                            picURLImg.src = pictureUrl;
+                            unameDisplay.textContent = profile.displayName;
+                            document.getElementById('uid').value = profile.userId;
+                            document.getElementById('number4').value = profile.displayName; // Assume line display name is initial value for 'ชื่อ'
+                            upicInput.value = profile.pictureUrl || '';
+                        })
+                        .catch(err => console.error("Get Profile Error:", err));
+                })
+                .catch(err => console.error("LIFF Init Error:", err));
+
+            // --- Prefix Button Logic (Handle Radio Button Click) ---
+            prefixRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    if (radio.checked) {
+                        prefixHidden.value = radio.value;
+                    }
+                });
+            });
+            // Set initial value for hidden field
+            prefixHidden.value = form.querySelector('input[name="Prefix"]:checked').value;
+
+
+            // --- Form Submission (Original Stable Fetch Logic) ---
+            const scriptURL = 'https://script.google.com/a/macros/pharm.chula.ac.th/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                document.getElementById('timestamp').value = new Date().toISOString();
+                
+                // Show Loading
+                Swal.fire({ title: 'กำลังบันทึกข้อมูล...', text: 'กรุณารอสักครู่', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+
+                fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                    .then(response => {
+                        // Success: Show confirmation and close
+                        Swal.fire({ title: 'ลงทะเบียนสำเร็จ!', text: 'ขอบคุณที่ให้ข้อมูลค่ะ', icon: 'success', confirmButtonColor: '#D18DA1'})
+                        .then(() => { if (liff) liff.closeWindow(); });
+                    })
+                    .catch(error => {
+                        // Error: Show error message
+                        Swal.fire({ title: 'เกิดข้อผิดพลาด!', text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง', icon: 'error', confirmButtonColor: '#D18DA1'});
+                        console.error('Error!', error.message);
+                    });
+            });
+            
+            // --- Original Checkbox/Submit Button Logic ---
+            $('#submit').prop('disabled', true);
+            $('#visto').click(function () {
+                if ($(this).is(':checked')) {
+                    $('#submit').prop('disabled', false);
+                } else {
+                    $('#submit').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+
+    <script src="script.js" theme="blue" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+    integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+    integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+    crossorigin="anonymous"></script>
+</body>
+</html>
