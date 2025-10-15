@@ -16,28 +16,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style type="text/css">
-        /* Custom styles and font definition */
-        body {
-            font-family: 'line_seed_sans_th', sans-serif;
-        }
-
-        /* Styling for form validation feedback messages */
-        .form-input:required:invalid+.invalid-feedback {
-            display: block;
-        }
+        body { font-family: 'line_seed_sans_th', sans-serif; }
+        .form-input:required:invalid+.invalid-feedback { display: block; }
     </style>
     
     <script>
-        // Custom Tailwind CSS Configuration for Chula Colors
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        'cu-pink': '#EC008C',
-                        'cu-gray-text': '#58595B',
-                        'cu-gray-light': '#D9D9D6',
-                        'cu-bg-light': '#F4F4F4',
-                    }
+                    colors: { 'cu-pink': '#EC008C', 'cu-gray-text': '#58595B', 'cu-gray-light': '#D9D9D6', 'cu-bg-light': '#F4F4F4' }
                 }
             }
         }
@@ -45,11 +32,6 @@
 </head>
 
 <body class="bg-cu-bg-light flex flex-col items-center justify-center min-h-screen p-4">
-
-    <div id="status-container" class="w-full max-w-md mx-auto text-center mb-6">
-        <div id="timer" class="hidden"></div>
-        <div id="msgStatus" class="text-cu-gray-text text-xl font-semibold"></div>
-    </div>
 
     <div id="cover" style="display:block;" class="w-full">
         <div id="loginPage" class="w-full max-w-md mx-auto">
@@ -63,43 +45,38 @@
                     <input type="hidden" id="uid" name="Uid">
                     <input type="hidden" id="uname" name="UName">
                     <input type="hidden" id="upic" name="Upic">
+                    <input type="hidden" id="timestamp" name="Timestamp">
 
                     <div class="space-y-4">
                         <div>
                             <label for="uname_display" class="block text-sm font-medium text-cu-gray-text">ชื่อ Line</label>
                             <input type="text" id="uname_display" class="mt-1 w-full p-3 bg-gray-100 border border-gray-300 rounded-md cursor-not-allowed" readonly>
                         </div>
-
                         <div>
                             <label for="tel" class="block text-sm font-medium text-cu-gray-text">เบอร์โทรศัพท์มือถือ</label>
                             <input type="tel" id="tel" name="tel" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเบอร์มือถือ 10 หลัก" pattern="[0-9]{10}" required>
                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเบอร์มือถือ 10 หลักให้ถูกต้อง</div>
                         </div>
-
                         <div>
                             <label for="number1" class="block text-sm font-medium text-cu-gray-text">เลขใบประกอบวิชาชีพ</label>
                             <input type="text" id="number1" name="number1" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเฉพาะตัวเลข" required>
                              <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกเลขใบประกอบ</div>
                         </div>
-
                         <div>
                             <label for="number2" class="block text-sm font-medium text-cu-gray-text">วันเกิด</label>
                             <input type="date" id="number2" name="number2" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" required>
                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณาเลือกวันเกิด</div>
                         </div>
-                        
                         <div>
                             <label for="number3" class="block text-sm font-medium text-cu-gray-text">Email</label>
                             <input type="email" id="number3" name="number3" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกอีเมล" required>
                             <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกอีเมลให้ถูกต้อง</div>
                         </div>
-
                         <div>
                             <label for="number4" class="block text-sm font-medium text-cu-gray-text">ชื่อ</label>
                             <input type="text" id="number4" name="number4" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกเฉพาะชื่อ" required>
                              <div class="invalid-feedback hidden text-red-600 text-sm mt-1">กรุณากรอกชื่อ</div>
                         </div>
-                        
                         <div>
                             <label for="number5" class="block text-sm font-medium text-cu-gray-text">นามสกุล</label>
                             <input type="text" id="number5" name="number5" class="form-input mt-1 w-full p-3 border border-gray-300 rounded-md focus:ring-cu-pink focus:border-cu-pink" placeholder="กรอกนามสกุล" required>
@@ -124,100 +101,66 @@
             </div>
         </div>
     </div>
-    
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript">
-    // ====================================================================
-    // 1. LIFF INITIALIZATION & PROFILE FETCHING
-    // ====================================================================
-    window.onload = function() {
-        initializeLiff("2007356106-xpYMlK8v");
-    };
-
-    function initializeLiff(myLiffId) {
-        liff.init({ liffId: myLiffId })
-            .then(() => { getid(); })
-            .catch(err => { console.error("LIFF Initialization failed", err); alert("ไม่สามารถเชื่อมต่อกับ LINE ได้ โปรดลองอีกครั้ง"); });
-    }
-
-    function getid() {
-        liff.getProfile().then(function(profile) {
-            document.getElementById("uid").value = profile.userId;
-            document.getElementById("uname").value = profile.displayName;
-            document.getElementById("uname_display").value = profile.displayName;
-            document.getElementById("upic").value = profile.pictureUrl;
-            document.getElementById("picURL").src = profile.pictureUrl;
-        }).catch(err => { console.error("Failed to get profile", err); alert("ไม่สามารถดึงข้อมูลโปรไฟล์ LINE ได้ โปรดลองอีกครั้ง"); });
-    }
-
-    // ====================================================================
-    // 2. FORM SUBMISSION TO GOOGLE SHEETS
-    // ====================================================================
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
-    const form = document.forms['google-sheet'];
-
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        document.getElementById('timestamp').value = '00:00';
-        document.getElementById('submit').disabled = true;
-        document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
-
-        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-            .then(response => { sendLiffMessage(); })
-            .catch(error => {
-                console.error('Error!', error.message);
-                alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง");
-                document.getElementById('submit').disabled = false;
-                document.getElementById('submit').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน';
-            });
-    });
-
-    function sendLiffMessage() {
-        const picURL = document.getElementById("upic").value;
-        const tel = document.getElementById("tel").value;
-        const number1 = document.getElementById("number1").value;
-        const number4 = document.getElementById("number4").value;
-        const number5 = document.getElementById("number5").value;
-
-        liff.sendMessages([{
-            type: "flex", altText: "ลงทะเบียนสำเร็จ",
-            contents: {
-                "type": "bubble", "hero": {"type": "image", "url": picURL, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover"},
-                "body": {"type": "box", "layout": "vertical", "spacing": "md", "contents": [
-                    {"type": "text", "text": "ลงทะเบียนเรียบร้อยแล้วค่ะ", "size": "xl", "weight": "bold", "color": "#1DB446"},
-                    {"type": "box", "layout": "vertical", "margin": "lg", "spacing": "sm", "contents": [
-                        {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "ชื่อ-สกุล", "color": "#aaaaaa", "size": "sm", "flex": 2}, {"type": "text", "text": `${number4} ${number5}`, "wrap": true, "color": "#666666", "size": "sm", "flex": 4, "weight": "bold"}]},
-                        {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เบอร์โทร", "color": "#aaaaaa", "size": "sm", "flex": 2}, {"type": "text", "text": tel, "wrap": true, "color": "#666666", "size": "sm", "flex": 4, "weight": "bold"}]},
-                        {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เลข ภ.", "color": "#aaaaaa", "size": "sm", "flex": 2}, {"type": "text", "text": number1, "wrap": true, "color": "#666666", "size": "sm", "flex": 4, "weight": "bold"}]}
-                    ]}
-                ]}
-            }
-        }]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
-    }
-
-// ====================================================================
-    // 3. CHECKBOX & SUBMIT BUTTON LOGIC (VANILLA JAVASCRIPT)
-    // ====================================================================
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkbox = document.getElementById('visto');
-        const submitButton = document.getElementById('submit');
-
-        function updateButtonState() {
-            // ถ้า checkbox ถูกติ๊ก (true) ให้ปุ่มกดได้ (disabled = false)
-            // ถ้า checkbox ไม่ถูกติ๊ก (false) ให้ปุ่มกดไม่ได้ (disabled = true)
-            submitButton.disabled = !checkbox.checked;
+    <script type="text/javascript">
+        // 1. LIFF INITIALIZATION & PROFILE FETCHING
+        window.onload = function() {
+            initializeLiff("2007356106-xpYMlK8v");
+        };
+        function initializeLiff(myLiffId) {
+            liff.init({ liffId: myLiffId })
+                .then(() => { getid(); })
+                .catch(err => { console.error("LIFF Initialization failed", err); alert("ไม่สามารถเชื่อมต่อกับ LINE ได้ โปรดลองอีกครั้ง"); });
+        }
+        function getid() {
+            liff.getProfile().then(function(profile) {
+                document.getElementById("uid").value = profile.userId;
+                document.getElementById("uname").value = profile.displayName;
+                document.getElementById("uname_display").value = profile.displayName;
+                document.getElementById("upic").value = profile.pictureUrl;
+                document.getElementById("picURL").src = profile.pictureUrl;
+            }).catch(err => { console.error("Failed to get profile", err); alert("ไม่สามารถดึงข้อมูลโปรไฟล์ LINE ได้ โปรดลองอีกครั้ง"); });
         }
 
-        // เมื่อมีการเปลี่ยนแปลงที่ checkbox ให้เรียกใช้ฟังก์ชันอัปเดตปุ่ม
-        checkbox.addEventListener('change', updateButtonState);
-        
-        // เรียกใช้ฟังก์ชันหนึ่งครั้งตอนเปิดหน้าเว็บ เพื่อตั้งค่าเริ่มต้นให้ถูกต้อง
-        updateButtonState();
-    });
+        // 2. FORM SUBMISSION TO GOOGLE SHEETS
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw-B7GIR7mMTcW4EhNTTU1-wfNQVo2uIwuDS88rnNdjVdptSKSvF05bGwZqluLdzXDNcQ/exec';
+        const form = document.forms['google-sheet'];
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            document.getElementById('timestamp').value = '00:00';
+            document.getElementById('submit').disabled = true;
+            document.getElementById('submit').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังส่งข้อมูล...';
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => { sendLiffMessage(); })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล โปรดลองอีกครั้ง");
+                    document.getElementById('submit').disabled = false;
+                    document.getElementById('submit').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>ลงทะเบียน';
+                });
+        });
+        function sendLiffMessage() {
+            const picURL = document.getElementById("upic").value;
+            const tel = document.getElementById("tel").value;
+            const number1 = document.getElementById("number1").value;
+            const number4 = document.getElementById("number4").value;
+            const number5 = document.getElementById("number5").value;
+            liff.sendMessages([{
+                type: "flex", altText: "ลงทะเบียนสำเร็จ",
+                contents: { "type": "bubble", "hero": {"type": "image", "url": picURL, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover"}, "body": {"type": "box", "layout": "vertical", "spacing": "md", "contents": [ {"type": "text", "text": "ลงทะเบียนเรียบร้อยแล้วค่ะ", "size": "xl", "weight": "bold", "color": "#1DB446"}, {"type": "box", "layout": "vertical", "margin": "lg", "spacing": "sm", "contents": [ {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "ชื่อ-สกุล", "color": "#aaaaaa", "size": "sm", "flex": 2}, {"type": "text", "text": `${number4} ${number5}`, "wrap": true, "color": "#666666", "size": "sm", "flex": 4, "weight": "bold"}]}, {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เบอร์โทร", "color": "#aaaaaa", "size": "sm", "flex": 2}, {"type": "text", "text": tel, "wrap": true, "color": "#666666", "size": "sm", "flex": 4, "weight": "bold"}]}, {"type": "box", "layout": "baseline", "spacing": "sm", "contents": [{"type": "text", "text": "เลข ภ.", "color": "#aaaaaa", "size": "sm", "flex": 2}, {"type": "text", "text": number1, "wrap": true, "color": "#666666", "size": "sm", "flex": 4, "weight": "bold"}]} ]} ]} }
+            }]).then(() => { liff.closeWindow(); }).catch((err) => { console.error("Error sending message:", err); liff.closeWindow(); });
+        }
 
-</script>
-    
-
+        // 3. CHECKBOX & SUBMIT BUTTON LOGIC (VANILLA JAVASCRIPT)
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('visto');
+            const submitButton = document.getElementById('submit');
+            function updateButtonState() {
+                submitButton.disabled = !checkbox.checked;
+            }
+            checkbox.addEventListener('change', updateButtonState);
+            updateButtonState();
+        });
+    </script>
 </body>
 </html>
