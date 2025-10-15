@@ -11,7 +11,10 @@
     
     <style>
         :root {
-            --primary-pink: #D18DA1; 
+            /* FINAL FIX #1: แยกสีชมพูเพื่อความชัดเจน */
+            --prefix-pink-active: #D18DA1; /* สีชมพูสบายตาสำหรับปุ่มคำนำหน้า */
+            --submit-pink-active: #E64A85; /* สีชมพูสดใสสำหรับปุ่มยืนยัน */
+            
             --dark-gray: #5C5455;
             --light-gray: #DCDCDC;
             --disabled-gray: #CCCCCC;
@@ -45,7 +48,7 @@
             width: 100%; padding: 12px 15px; border: 1px solid var(--light-gray); border-radius: 8px;
             font-size: 1rem; color: var(--dark-gray); box-sizing: border-box; transition: all 0.2s ease-in-out;
         }
-        .form-group input:focus { outline: none; border-color: var(--primary-pink); box-shadow: 0 0 5px rgba(209, 141, 161, 0.5); }
+        .form-group input:focus { outline: none; border-color: var(--prefix-pink-active); box-shadow: 0 0 5px rgba(209, 141, 161, 0.5); }
         .form-group input:disabled { background-color: #F5F5F5; cursor: not-allowed; }
 
         .prefix-buttons { display: flex; gap: 10px; }
@@ -55,19 +58,26 @@
             font-family: 'Sarabun', sans-serif; cursor: pointer; transition: all 0.2s ease-in-out;
         }
         .prefix-btn:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .prefix-btn.active { background-color: var(--primary-pink); color: white; border-color: var(--primary-pink); }
-        .prefix-btn:disabled { background-color: #F5F5F5; transform: none; box-shadow: none; cursor: not-allowed;}
+        .prefix-btn.active { background-color: var(--prefix-pink-active); color: white; border-color: var(--prefix-pink-active); }
+        .prefix-btn:disabled { background-color: var(--disabled-gray); transform: none; box-shadow: none; cursor: not-allowed; color: #888; border-color: var(--disabled-gray); }
+
+        /* FINAL FIX #2: ทำให้ปุ่มที่ถูกเลือกยังคงดูต่าง แม้จะถูก disable */
+        .prefix-btn.active:disabled {
+            background-color: var(--prefix-pink-active);
+            opacity: 0.6;
+            color: white;
+        }
         
         .checkbox-group { display: flex; align-items: center; margin-top: 25px; margin-bottom: 30px; }
         .checkbox-group input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; }
         .checkbox-group label { font-size: 1rem; cursor: pointer; }
 
         .submit-button {
-            width: 100%; padding: 15px 20px; background-color: var(--primary-pink); color: white;
+            width: 100%; padding: 15px 20px; background-color: var(--submit-pink-active); color: white;
             border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600;
             cursor: pointer; transition: background-color 0.3s ease;
         }
-        .submit-button:hover { background-color: #C17C8E; }
+        .submit-button:hover { background-color: #D33A71; }
         .submit-button:disabled { background-color: var(--disabled-gray); cursor: not-allowed; transform: none; box-shadow: none; }
     </style>
 </head>
@@ -133,29 +143,20 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
         async function main() {
-            // FIX #4: LIFF Initialization and Login
             try {
-                await liff.init({ liffId: "2007356106-xpYMlK8v" }); 
-            } catch (err) {
-                console.error("LIFF Initialization Error: ", err);
-                Swal.fire('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'กรุณาตรวจสอบการตั้งค่า LIFF ID และลองอีกครั้ง', 'error');
-                return;
-            }
-
-            if (!liff.isLoggedIn()) {
-                liff.login({ redirectUri: window.location.href });
-                return;
-            }
-            
-            try {
+                await liff.init({ liffId: "YOUR_LIFF_ID_HERE" });
+                if (!liff.isLoggedIn()) {
+                    liff.login({ redirectUri: window.location.href });
+                    return;
+                }
                 const profile = await liff.getProfile();
                 document.getElementById('lineProfilePicture').src = profile.pictureUrl;
                 document.getElementById('lineDisplayName').textContent = profile.displayName;
                 document.getElementById('userId').value = profile.userId;
                 document.getElementById('lineName').value = profile.displayName;
-            } catch(err) {
-                 console.error("Get Profile Error: ", err);
-                 Swal.fire('ไม่สามารถดึงข้อมูลโปรไฟล์', 'กรุณาอนุญาตให้แอปเข้าถึงข้อมูลโปรไฟล์ของคุณใน LINE', 'warning');
+            } catch (err) {
+                console.error("LIFF Error: ", err);
+                Swal.fire('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'กรุณาตรวจสอบการตั้งค่า LIFF ID และเปิดผ่านแอปพลิเคชัน LINE', 'error');
             }
             
             const form = document.getElementById('registrationForm');
@@ -165,7 +166,6 @@
             const phoneNumberInput = document.getElementById('phoneNumber');
             const licenseNumberInput = document.getElementById('licenseNumber');
             const confirmCheckbox = document.getElementById('confirmData');
-            const requiredInputs = Array.from(form.querySelectorAll('[required]'));
             
             prefixButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -175,15 +175,13 @@
                 });
             });
 
-            // FIX #1: SweetAlert for non-numeric License Number
             licenseNumberInput.addEventListener('input', () => {
                 const value = licenseNumberInput.value;
                 if (/[^0-9]/.test(value)) {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'ข้อมูลไม่ถูกต้อง',
+                        icon: 'error', title: 'ข้อมูลไม่ถูกต้อง',
                         text: 'กรุณากรอกเฉพาะตัวเลขเท่านั้นค่ะ',
-                        confirmButtonColor: 'var(--primary-pink)'
+                        confirmButtonColor: 'var(--prefix-pink-active)'
                     });
                     licenseNumberInput.value = value.replace(/[^0-9]/g, '');
                 }
@@ -192,34 +190,50 @@
             phoneNumberInput.addEventListener('blur', () => {
                 const phone = phoneNumberInput.value;
                 if (phone.length > 0 && (phone.length !== 10 || phone.charAt(0) !== '0')) {
-                    Swal.fire({ icon: 'error', title: 'เบอร์โทรศัพท์ไม่ถูกต้อง', text: 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก และขึ้นต้นด้วยเลข 0 ค่ะ', confirmButtonColor: 'var(--primary-pink)'});
+                    Swal.fire({ icon: 'error', title: 'เบอร์โทรศัพท์ไม่ถูกต้อง', text: 'กรุณากรอกเบอร์โทรศัพท์ 10 หลัก และขึ้นต้นด้วยเลข 0 ค่ะ', confirmButtonColor: 'var(--prefix-pink-active)'});
                 }
             });
             
-            // FIX #2: Form Validation & Submit Button State
-            function validateForm() {
-                const allRequiredFilled = requiredInputs.every(input => {
+            function isFormFullyValid() {
+                const requiredInputs = form.querySelectorAll('[required]');
+                let isAllValid = Array.from(requiredInputs).every(input => {
                     if (input.type === 'checkbox') return input.checked;
                     return input.value.trim() !== '';
                 });
-                
                 const phone = phoneNumberInput.value;
-                const isPhoneValid = phone.length === 10 && phone.charAt(0) === '0';
-                
-                return allRequiredFilled && isPhoneValid;
+                if (phone.length !== 10 || phone.charAt(0) !== '0') {
+                    isAllValid = false;
+                }
+                return isAllValid;
             }
 
             form.addEventListener('input', () => {
-                if (validateForm()) {
-                    submitButton.disabled = false;
-                } else {
-                    submitButton.disabled = true;
-                }
+                submitButton.disabled = !isFormFullyValid();
             });
 
-            // FIX #3: Lock form fields when checkbox is ticked
+            // FINAL FIX #3: แจ้งเตือนเมื่อติ๊กยืนยัน แต่ฟอร์มยังไม่ครบ
             confirmCheckbox.addEventListener('change', function() {
                 const elementsToToggle = form.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"], .prefix-btn');
+                
+                if (this.checked) {
+                    let otherFieldsValid = true;
+                    form.querySelectorAll('[required]').forEach(input => {
+                        if (input.id !== 'confirmData' && input.value.trim() === '') {
+                            otherFieldsValid = false;
+                        }
+                    });
+
+                    if(!otherFieldsValid) {
+                        Swal.fire({
+                            icon: 'warning', title: 'ข้อมูลยังไม่ครบถ้วน',
+                            text: 'กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบถ้วนก่อนกดยืนยันค่ะ',
+                            confirmButtonColor: 'var(--prefix-pink-active)'
+                        });
+                        this.checked = false; // ยกเลิกการติ๊ก
+                        return;
+                    }
+                }
+                
                 elementsToToggle.forEach(el => {
                     el.disabled = this.checked;
                 });
@@ -230,13 +244,11 @@
                 document.getElementById('timestamp').value = new Date().toISOString();
                 Swal.fire({
                     title: 'ยืนยันการส่งข้อมูล?', text: "กรุณาตรวจสอบข้อมูลก่อนกดยืนยัน", icon: 'question',
-                    showCancelButton: true, confirmButtonColor: 'var(--primary-pink)', cancelButtonColor: '#888',
+                    showCancelButton: true, confirmButtonColor: 'var(--submit-pink-active)', cancelButtonColor: '#888',
                     confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // In a real scenario, you would now submit the form data.
-                        // For example: form.submit();
-                        Swal.fire({ title: 'ลงทะเบียนสำเร็จ!', text: 'ขอบคุณที่ให้ข้อมูลค่ะ', icon: 'success', confirmButtonColor: 'var(--primary-pink)'})
+                        Swal.fire({ title: 'ลงทะเบียนสำเร็จ!', text: 'ขอบคุณที่ให้ข้อมูลค่ะ', icon: 'success', confirmButtonColor: 'var(--submit-pink-active)'})
                         .then(() => { if (liff) liff.closeWindow(); });
                     }
                 });
