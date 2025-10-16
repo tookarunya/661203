@@ -298,11 +298,28 @@ form.addEventListener('submit', e => {
                         // 3. ส่งข้อมูลและข้อความ
                         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                             .then(response => {
+
+if (!liff.isInClient()) {
+  Swal.fire({
+    icon: 'warning',
+    title: 'ไม่สามารถส่ง Flex ได้',
+    text: 'กรุณาเปิดลิงก์นี้ผ่านแอป LINE เท่านั้นค่ะ',
+    confirmButtonColor: 'var(--primary-pink)'
+  });
+  return;
+}
+
+                                
                                 liff.sendMessages([flexMessage])
-                                    .then(() => { Swal.close(); liff.closeWindow(); })
+                                    // .then(() => { Swal.close(); liff.closeWindow(); })
+                                    .then(() => {
+                                        Swal.close();
+                                        setTimeout(() => liff.closeWindow(), 500);
+                                    })
                                     .catch((err) => {
                                         console.error("Send Message Error", err);
-                                        Swal.fire('ลงทะเบียนสำเร็จ', 'แต่ไม่สามารถส่งข้อความยืนยันได้', 'warning').then(() => liff.closeWindow());
+                                        // Swal.fire('ลงทะเบียนสำเร็จ', 'แต่ไม่สามารถส่งข้อความยืนยันได้', 'warning').then(() => liff.closeWindow());
+                                        Swal.fire('ลงทะเบียนสำเร็จ', 'แต่ไม่สามารถส่งข้อความยืนยันได้', JSON.stringify(err), 'error');
                                     });
                             })
                             .catch(error => { /* ... Error handling for Sheet ... */ });
