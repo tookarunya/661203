@@ -319,12 +319,9 @@ if (!liff.isInClient()) {
                                     .catch((err) => {
                                         console.error("Send Message Error", err);
                                         // Swal.fire('ลงทะเบียนสำเร็จ', 'แต่ไม่สามารถส่งข้อความยืนยันได้', 'warning').then(() => liff.closeWindow());
-                                        // Swal.fire('ลงทะเบียนสำเร็จ', 'แต่ไม่สามารถส่งข้อความยืนยันได้', JSON.stringify(err), 'error');
+                                        Swal.fire('ลงทะเบียนสำเร็จ', 'แต่ไม่สามารถส่งข้อความยืนยันได้', JSON.stringify(err), 'error');
                                             Swal.fire({
-      icon: 'error',
-      title: 'เกิดข้อผิดพลาด',
-      text: JSON.stringify(err),
-      confirmButtonColor: 'var(--primary-pink)'
+
                                     });
                             })
                             .catch(error => { /* ... Error handling for Sheet ... */ });
